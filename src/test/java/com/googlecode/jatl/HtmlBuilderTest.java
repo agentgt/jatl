@@ -1,5 +1,6 @@
 package com.googlecode.jatl;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 
 import java.io.StringWriter;
@@ -12,6 +13,7 @@ import com.googlecode.jatl.Html;
 
 public class HtmlBuilderTest {
 	StringWriter sw = new StringWriter();
+	StringWriter writer = sw;
 	Html html = new Html(sw);
 	
 	@Before
@@ -99,6 +101,37 @@ public class HtmlBuilderTest {
 				"	<div title=\"second\">Second\n" + 
 				"	</div>\n" + 
 				"</div>";
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void testExample() throws Exception {
+		//From http://codemonkeyism.com/the-best-markup-builder-i-could-build-in-java/
+		new Html(writer) {{
+			html();
+				body();
+				h1().text("Name Games").end();
+				p().id("${id}").text("Hello ${coolName}, and hello").end();
+				ul();
+				for(String name : asList("Stephanie")) {
+					li().text(name).end();
+				}
+				endAll();
+		}};
+		String result = writer.getBuffer().toString();
+		String expected = "\n" +
+				"<html>\n" + 
+				"	<body>\n" + 
+				"		<h1>Name Games\n" + 
+				"		</h1>\n" + 
+				"		<p id=\"${id}\">Hello ${coolName}, and hello\n" + 
+				"		</p>\n" + 
+				"		<ul>\n" + 
+				"			<li>Stephanie\n" + 
+				"			</li>\n" + 
+				"		</ul>\n" + 
+				"	</body>\n" + 
+				"</html>";
 		assertEquals(expected, result);
 	}
 	

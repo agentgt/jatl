@@ -16,7 +16,7 @@ public abstract class HtmlBuilder<T> extends MarkupBuilder<T> {
 	}
 	
 	public T body() {
-		return start("html", TagClosingPolicy.PAIR); 
+		return start("body", TagClosingPolicy.PAIR); 
 	}
 	
 	public T h1() {
@@ -36,15 +36,15 @@ public abstract class HtmlBuilder<T> extends MarkupBuilder<T> {
 	}
 	
 	public T ul() {
-		return start("html", TagClosingPolicy.PAIR); 
+		return start("ul", TagClosingPolicy.PAIR); 
 	}
 	
 	public T ol() {
-		return start("html", TagClosingPolicy.PAIR); 
+		return start("ol", TagClosingPolicy.PAIR); 
 	}
 	
 	public T li() {
-		return start("html", TagClosingPolicy.NORMAL); 
+		return start("li", TagClosingPolicy.NORMAL); 
 	}
 	
 	public T div() {
