@@ -11,6 +11,42 @@ public abstract class HtmlBuilder<T> extends MarkupBuilder<T> {
 		super(writer);
 	}
 	
+	public T html() {
+		return start("html", TagClosingPolicy.PAIR); 
+	}
+	
+	public T body() {
+		return start("html", TagClosingPolicy.PAIR); 
+	}
+	
+	public T h1() {
+		return start("h1", TagClosingPolicy.PAIR);
+	}
+	
+	public T h2() {
+		return start("h2", TagClosingPolicy.PAIR);
+	}
+	
+	public T h3() {
+		return start("h3", TagClosingPolicy.PAIR);
+	}
+	
+	public T p() {
+		return start("p", TagClosingPolicy.PAIR);
+	}
+	
+	public T ul() {
+		return start("html", TagClosingPolicy.PAIR); 
+	}
+	
+	public T ol() {
+		return start("html", TagClosingPolicy.PAIR); 
+	}
+	
+	public T li() {
+		return start("html", TagClosingPolicy.NORMAL); 
+	}
+	
 	public T div() {
 		return start("div", TagClosingPolicy.PAIR);
 	}

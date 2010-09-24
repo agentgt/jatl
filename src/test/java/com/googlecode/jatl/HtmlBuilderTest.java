@@ -18,8 +18,9 @@ public class HtmlBuilderTest {
 	public void setUp() throws Exception {
 	}
 
+	
 	@Test
-	public void testHtml() {
+	public void testFluentHtml() {
 		html
 			.div()
 			.select().id("adam").name("adam")
@@ -43,7 +44,7 @@ public class HtmlBuilderTest {
 	}
 	
 	@Test
-	public void testHtmlEnd() {
+	public void testFluentHtmlEndWithArg() {
 		html
 			.div()
 			.select().id("adam").name("adam")
@@ -63,7 +64,7 @@ public class HtmlBuilderTest {
 	}
 	
 	@Test
-	public void testHtmlCheckbox() {
+	public void testFluentHtmlCheckbox() {
 		html
 			.div()
 			.checkbox()
@@ -79,5 +80,28 @@ public class HtmlBuilderTest {
 				"</div>";
 		assertEquals(expected, result);
 	}
+	
+	@Test
+	public void testAnonClassHtml() {
+		new Html(sw) {{
+			div().title("first");
+				span().id("hello").end();
+				div().title("second");
+					text("Second");
+				end();
+			end();
+		}};
+		String result = sw.getBuffer().toString();
+		String expected = "\n" +
+				"<div title=\"first\">\n" + 
+				"	<span id=\"hello\">\n" + 
+				"	</span>\n" + 
+				"	<div title=\"second\">Second\n" + 
+				"	</div>\n" + 
+				"</div>";
+		assertEquals(expected, result);
+	}
+	
+	
 
 }
