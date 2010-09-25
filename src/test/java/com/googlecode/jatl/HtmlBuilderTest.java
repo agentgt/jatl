@@ -17,15 +17,12 @@
 package com.googlecode.jatl;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.StringWriter;
 
-
 import org.junit.Before;
 import org.junit.Test;
-
-import com.googlecode.jatl.Html;
 
 public class HtmlBuilderTest {
 	StringWriter sw = new StringWriter();
@@ -151,6 +148,49 @@ public class HtmlBuilderTest {
 				"	</body>\n" + 
 				"</html>";
 		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void testNestedBuilder() throws Exception {
+		new Html(writer) {{
+		    bind("id", "foo");
+		    bind("coolName", "Awesomo");
+			html();
+				body();
+    				h1().text("${coolName}").end();
+    				new MyMarkup(this) {{
+    					div().text("this ${coolName} should not be surround by a html div");
+    					done();
+    				}};
+			done();
+		}};
+		String result = writer.getBuffer().toString();
+		String expected = "\n" + 
+				"<html>\n" + 
+				"	<body>\n" + 
+				"		<h1>Awesomo\n" + 
+				"		</h1>\n" + 
+				"		<divide>this Awesomo should not be surround by a html div\n" + 
+				"		</divide>\n" + 
+				"	</body>\n" + 
+				"</html>";
+		assertEquals(expected, result);
+	}
+	
+	public static class MyMarkup extends MarkupBuilder<MyMarkup> {
+
+		public MyMarkup(MarkupBuilder<?> builder) {
+			super(builder);
+		}
+
+		@Override
+		protected MyMarkup getSelf() {
+			return this;
+		}
+		
+		public MyMarkup div() {
+			return start("divide");
+		}
 	}
 	
 	

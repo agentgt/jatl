@@ -22,11 +22,14 @@ import org.apache.commons.lang.StringEscapeUtils;
 
 public abstract class HtmlBuilder<T> extends MarkupBuilder<T> {
 
-
 	public HtmlBuilder(Writer writer) {
 		super(writer);
 	}
 	
+	public HtmlBuilder(MarkupBuilder<?> builder) {
+		super(builder);
+	}
+
 	public T html() {
 		return start("html", TagClosingPolicy.PAIR); 
 	}

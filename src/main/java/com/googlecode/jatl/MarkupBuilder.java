@@ -17,6 +17,7 @@
 package com.googlecode.jatl;
 
 import static org.apache.commons.lang.Validate.isTrue;
+import static org.apache.commons.lang.Validate.notNull;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -27,6 +28,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Stack;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.text.StrSubstitutor;
 
 public abstract class MarkupBuilder<T> {
@@ -34,13 +36,39 @@ public abstract class MarkupBuilder<T> {
 	private Writer writer;
 	private Map<String, String> attributes = createMap();
 	private Map<String, Object> bindings = new HashMap<String, Object>();
+	private MarkupBuilder<?> previousBuilder = null;
+	protected int depth = 0;
 
 	private static final String q = "\"";
 	
-	
+	/**
+	 * Create a builder using the given writer.
+	 * @param writer never <code>null</code>.
+	 */
 	public MarkupBuilder(Writer writer) {
 		super();
+		notNull(writer, "writer");
 		this.writer = writer;
+	}
+	
+	/**
+	 * Use a nested builder.
+	 * @param builder never <code>null</code>.
+	 */
+	public MarkupBuilder(MarkupBuilder<?> builder) {
+		builder.writeCurrentTag();
+		if (! builder.tagStack.isEmpty()) {
+			Tag t = builder.tagStack.peek();
+			this.depth = 1 + t.depth + builder.depth;
+		}
+		else {
+			this.depth = builder.depth;
+		}
+		this.writer = builder.writer;
+		builder.writer = null;
+		//Clone the previous builders binding
+		this.bindings = new HashMap<String, Object>(builder.bindings);
+		this.previousBuilder = builder;
 	}
 	
 	protected abstract T getSelf();
@@ -130,6 +158,17 @@ public abstract class MarkupBuilder<T> {
 		return getSelf();
 	}
 	
+	/**
+	 * Call when completely done with the builder.
+	 */
+	public void done() {
+		endAll();
+		if (previousBuilder != null) {
+			isTrue(previousBuilder.writer == null);
+			previousBuilder.writer = writer;
+		}
+	}
+	
 	private void writeCurrentTag() {
 		if ( ! tagStack.isEmpty() ) {
 			Tag current = tagStack.peek();
@@ -205,6 +244,7 @@ public abstract class MarkupBuilder<T> {
 	}
 	
 	private void write(String raw) {
+		notNull(writer, "The current writer is in use by another builder.");
 		try {
 			writer.write(raw);
 		} catch (IOException e) {
@@ -215,9 +255,12 @@ public abstract class MarkupBuilder<T> {
 		return new LinkedHashMap<String, String>();
 	}
 	
-	protected abstract String escapeMarkup(String raw);
+	protected String escapeMarkup(String raw) {
+		return StringEscapeUtils.escapeXml(raw);
+	}
 	
 	protected String indent(int depth, String tag) {
+		depth += this.depth;
 		StringBuffer sb = new StringBuffer(depth + 1);
 		sb.append("\n");
 		for (int i = 0; i < depth; i++) {

@@ -23,6 +23,10 @@ public class Html extends HtmlBuilder<Html> {
 	public Html(Writer writer) {
 		super(writer);
 	}
+	
+	public Html(MarkupBuilder<?> builder) {
+		super(builder);
+	}
 
 	@Override
 	protected Html getSelf() {
