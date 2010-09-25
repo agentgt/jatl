@@ -127,14 +127,19 @@ public class HtmlBuilderTest {
 				body();
     				h1().text("Name Games").end();
     				p().id("${id}").text("Hello ${coolName}, and hello").end();
-    				ul();
-    				for(String name : asList("Stephanie")) {
-    					li().text(name).end();
-    				}
-			endAll();
-		}};
+    			makeList("Kyle","Stan", "Eric", "${coolName}");
+			done();
+		}
+			Html makeList(String ... names) {
+				ul();
+				for(String name : names) {
+					li().text(name).end();
+				}
+				return end();
+			}
+		};
 		String result = writer.getBuffer().toString();
-		String expected = "\n" +
+		String expected = "\n" + 
 				"<html>\n" + 
 				"	<body>\n" + 
 				"		<h1>Name Games\n" + 
@@ -142,7 +147,13 @@ public class HtmlBuilderTest {
 				"		<p id=\"foo\">Hello Awesomo, and hello\n" + 
 				"		</p>\n" + 
 				"		<ul>\n" + 
-				"			<li>Stephanie\n" + 
+				"			<li>Kyle\n" + 
+				"			</li>\n" + 
+				"			<li>Stan\n" + 
+				"			</li>\n" + 
+				"			<li>Eric\n" + 
+				"			</li>\n" + 
+				"			<li>Awesomo\n" + 
 				"			</li>\n" + 
 				"		</ul>\n" + 
 				"	</body>\n" + 
@@ -191,8 +202,6 @@ public class HtmlBuilderTest {
 		public MyMarkup div() {
 			return start("divide");
 		}
-	}
+	}	
 	
-	
-
 }
