@@ -34,6 +34,10 @@ public abstract class HtmlBuilder<T> extends MarkupBuilder<T> {
 		return start("html", TagClosingPolicy.PAIR); 
 	}
 	
+	public T head() {
+		return start("head", TagClosingPolicy.PAIR);
+	}
+	
 	public T body() {
 		return start("body", TagClosingPolicy.PAIR); 
 	}
@@ -130,10 +134,21 @@ public abstract class HtmlBuilder<T> extends MarkupBuilder<T> {
 		return attr("style", style);
 	}
 	
+	/**
+	 * Title attribute.
+	 * 
+	 * @param title maybe <code>null</code>.
+	 * @return never <code>null</code>.
+	 */
 	public T title(String title) {
 		return attr("title", title);
 	}
 	
+	/**
+	 * This is for the title tag that goes in html head.
+	 * Not to be confused with the title attribute {@link #title(String)}.
+	 * @return never <code>null</code>.
+	 */
 	public T title() {
 	    return start("title", TagClosingPolicy.PAIR);
 	}
