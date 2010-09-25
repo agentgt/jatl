@@ -74,6 +74,11 @@ public abstract class MarkupBuilder<T> {
 	    return getSelf();
 	}
 	
+	public T unbind(String name) {
+	    bindings.remove(name);
+	    return getSelf();
+	}
+	
 	public T bind(Collection<Entry<String, Object>> nvps) {
 	    for (Entry<String,Object> nvp : nvps) {
 	        bind(nvp.getKey(), nvp.getValue());
