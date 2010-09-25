@@ -4,15 +4,20 @@ import static org.apache.commons.lang.Validate.isTrue;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Stack;
 
+import org.apache.commons.lang.text.StrSubstitutor;
+
 public abstract class MarkupBuilder<T> {
 	private Stack<Tag> tagStack = new Stack<Tag>();
 	private Writer writer;
 	private Map<String, String> attributes = createMap();
+	private Map<String, Object> bindings = new HashMap<String, Object>();
 
 	private static final String q = "\"";
 	
@@ -31,17 +36,33 @@ public abstract class MarkupBuilder<T> {
 	public T text(String text) {
 		if (text != null) {
 			writeCurrentTag();
-			write(escapeMarkup(text));
+			write(escapeMarkup(expand(text)));
 		}
 		return getSelf();
 	}
 	
 	public T raw(String text) {
+	    return raw(text, true);
+	}
+	public T raw(String text, boolean expand) {
 		if (text != null) {
 			writeCurrentTag();
+			text = expand ? expand(text) : text;
 			write(text);
 		}
 		return getSelf();
+	}
+	
+	public T bind(String name, Object value) {
+	    bindings.put(name, value);
+	    return getSelf();
+	}
+	
+	public T bind(Collection<Entry<String, Object>> nvps) {
+	    for (Entry<String,Object> nvp : nvps) {
+	        bind(nvp.getKey(), nvp.getValue());
+	    }
+	    return getSelf();
 	}
 	
 	public T start(String tag) {
@@ -133,7 +154,6 @@ public abstract class MarkupBuilder<T> {
 		}
 	}
 	
-
 	private void writeAttributes(Map<String, String> attrs) {
 		if (attrs == null) return;
 		boolean space = false;
@@ -151,12 +171,18 @@ public abstract class MarkupBuilder<T> {
 	}
 	private void writeAttr(String name, String value) {
 		if (value != null && name != null) {
-			write(name + "=" + q(value));
+			write(expand(name + "=" + q(value)));
 		}		
 	}
 	private String q(String raw) {
-		return q + escapeMarkup(raw) + q;
+		return q + escapeMarkup(expand(raw)) + q;
 	}
+	
+	private String expand(String text) {
+	    StrSubstitutor s = new StrSubstitutor(bindings);
+	    return s.replace(text);
+	}
+	
 	private void write(String raw) {
 		try {
 			writer.write(raw);

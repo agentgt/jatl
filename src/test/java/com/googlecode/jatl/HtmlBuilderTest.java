@@ -108,15 +108,17 @@ public class HtmlBuilderTest {
 	public void testExample() throws Exception {
 		//From http://codemonkeyism.com/the-best-markup-builder-i-could-build-in-java/
 		new Html(writer) {{
+		    bind("id", "foo");
+		    bind("coolName", "Awesomo");
 			html();
 				body();
-				h1().text("Name Games").end();
-				p().id("${id}").text("Hello ${coolName}, and hello").end();
-				ul();
-				for(String name : asList("Stephanie")) {
-					li().text(name).end();
-				}
-				endAll();
+    				h1().text("Name Games").end();
+    				p().id("${id}").text("Hello ${coolName}, and hello").end();
+    				ul();
+    				for(String name : asList("Stephanie")) {
+    					li().text(name).end();
+    				}
+			endAll();
 		}};
 		String result = writer.getBuffer().toString();
 		String expected = "\n" +
@@ -124,7 +126,7 @@ public class HtmlBuilderTest {
 				"	<body>\n" + 
 				"		<h1>Name Games\n" + 
 				"		</h1>\n" + 
-				"		<p id=\"${id}\">Hello ${coolName}, and hello\n" + 
+				"		<p id=\"foo\">Hello Awesomo, and hello\n" + 
 				"		</p>\n" + 
 				"		<ul>\n" + 
 				"			<li>Stephanie\n" + 

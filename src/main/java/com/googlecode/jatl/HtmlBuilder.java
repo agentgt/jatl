@@ -115,6 +115,10 @@ public abstract class HtmlBuilder<T> extends MarkupBuilder<T> {
 		return attr("title", title);
 	}
 	
+	public T title() {
+	    return start("title", TagClosingPolicy.PAIR);
+	}
+	
 	public T id(String id) {
 		return attr("id", id);
 	}
