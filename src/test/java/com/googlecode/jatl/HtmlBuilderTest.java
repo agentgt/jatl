@@ -201,6 +201,47 @@ public class HtmlBuilderTest {
 		public MyMarkup div() {
 			return start("divide");
 		}
-	}	
+	}
+	
+	@Test
+	public void testBuilderResuming() throws Exception {
+		/*
+		 * Builder resuming is kind of dangerous.
+		 */
+		Html page = new Html(writer);
+		/*
+		 * Do the header first.
+		 */
+		page = new Html(page, false) {{
+			html().head().end();
+			body();
+		}};
+		/*
+		 * Body.
+		 */
+		page = new Html(page, false) {{
+			h1().text("Hello World").end();
+		}};
+		/*
+		 * Do the footer
+		 */
+		page = new Html(page, false) {{
+			end();
+			end();
+		}};
+		
+		String result = writer.getBuffer().toString();
+		String expected = "\n" + 
+				"<html>\n" + 
+				"	<head>\n" + 
+				"	</head>\n" + 
+				"	<body>\n" + 
+				"		<h1>Hello World\n" + 
+				"		</h1>\n" + 
+				"	</body>\n" + 
+				"</html>";
+		assertEquals(expected, result);
+		
+	}
 	
 }

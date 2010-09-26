@@ -20,6 +20,15 @@ import java.io.Writer;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
+/**
+ * Most of the XHTML tags and attributes are available as methods.
+ * A rule of thumb is that most tags are no parameter methods and attribute
+ * methods are single parameter.
+ * 
+ * @author adamgent
+ *
+ * @param <T> See {@link MarkupBuilder} for how this should be parameterized.
+ */
 public abstract class HtmlBuilder<T> extends MarkupBuilder<T> {
 
 	public HtmlBuilder(Writer writer) {
@@ -28,6 +37,10 @@ public abstract class HtmlBuilder<T> extends MarkupBuilder<T> {
 	
 	public HtmlBuilder(MarkupBuilder<?> builder) {
 		super(builder);
+	}
+
+	public HtmlBuilder(MarkupBuilder<?> builder, boolean nested) {
+		super(builder, nested);
 	}
 
 	public T html() {
@@ -113,7 +126,7 @@ public abstract class HtmlBuilder<T> extends MarkupBuilder<T> {
 	}
 	
 	public T script() {
-		return start("script");
+		return start("script", TagClosingPolicy.PAIR);
 	}
 	
 	public T option(String name, String value, boolean selected) {

@@ -27,6 +27,12 @@ public class Html extends HtmlBuilder<Html> {
 	public Html(MarkupBuilder<?> builder) {
 		super(builder);
 	}
+	
+	
+
+	public Html(MarkupBuilder<?> builder, boolean nested) {
+		super(builder, nested);
+	}
 
 	@Override
 	protected Html getSelf() {

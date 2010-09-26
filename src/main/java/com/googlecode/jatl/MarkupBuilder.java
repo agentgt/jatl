@@ -17,6 +17,7 @@
 package com.googlecode.jatl;
 
 import static org.apache.commons.lang.Validate.isTrue;
+import static org.apache.commons.lang.Validate.notEmpty;
 import static org.apache.commons.lang.Validate.notNull;
 
 import java.io.IOException;
@@ -31,6 +32,14 @@ import java.util.Stack;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.text.StrSubstitutor;
 
+/**
+ * Fluent/Builder to write markup to a {@link Writer}.
+ * <p>
+ * <em>This class and subclasses are not thread safe.</em>
+ * @author adamgent
+ * @param <T> This should always be parameterized with the exact same 
+ * class that is extending the {@link MarkupBuilder} to support fluent style.
+ */
 public abstract class MarkupBuilder<T> {
 	private Stack<Tag> tagStack = new Stack<Tag>();
 	private Writer writer;
@@ -52,12 +61,23 @@ public abstract class MarkupBuilder<T> {
 	}
 	
 	/**
-	 * Use a nested builder.
-	 * @param builder never <code>null</code>.
+	 * Create a nested builder from given builder.
+	 * @param builder never <code>null</code>. 
 	 */
 	public MarkupBuilder(MarkupBuilder<?> builder) {
-		builder.writeCurrentTag();
-		if (! builder.tagStack.isEmpty()) {
+		this(builder, true);
+	}
+	
+	/**
+	 * Create a nested builder from a builder or resume from a builder.
+	 * @param builder never <code>null</code>.
+	 * @param nested <code>true</code> means nested, <code>false</code> means resuming.
+	 */
+	public MarkupBuilder(MarkupBuilder<?> builder, boolean nested) {
+		builder.checkWriter();
+		if (nested)
+			builder.writeCurrentTag();
+		if (nested && ! builder.tagStack.isEmpty()) {
 			Tag t = builder.tagStack.peek();
 			this.depth = 1 + t.depth + builder.depth;
 		}
@@ -66,9 +86,16 @@ public abstract class MarkupBuilder<T> {
 		}
 		this.writer = builder.writer;
 		builder.writer = null;
-		//Clone the previous builders binding
-		this.bindings = new HashMap<String, Object>(builder.bindings);
 		this.previousBuilder = builder;
+		if (nested) {
+			//Clone the previous builders binding
+			this.bindings = new HashMap<String, Object>(builder.bindings);
+		}
+		else {
+			this.tagStack = builder.tagStack;
+			this.bindings = builder.bindings;
+			this.attributes = builder.attributes;
+		}
 	}
 	
 	protected abstract T getSelf();
@@ -77,7 +104,7 @@ public abstract class MarkupBuilder<T> {
 		return attributes;
 	}
 
-	public T text(String text) {
+	public final T text(String text) {
 		if (text != null) {
 			writeCurrentTag();
 			write(escapeMarkup(expand(text)));
@@ -85,10 +112,10 @@ public abstract class MarkupBuilder<T> {
 		return getSelf();
 	}
 	
-	public T raw(String text) {
+	public final T raw(String text) {
 	    return raw(text, true);
 	}
-	public T raw(String text, boolean expand) {
+	public final T raw(String text, boolean expand) {
 		if (text != null) {
 			writeCurrentTag();
 			text = expand ? expand(text) : text;
@@ -97,28 +124,67 @@ public abstract class MarkupBuilder<T> {
 		return getSelf();
 	}
 	
-	public T bind(String name, Object value) {
+	/**
+	 * Binds a named variables to be used for expansion in {@link #attr(String...) attributes} 
+	 * and {@link #text(String) text}. Variables are represented with by <code>${...}</code>.
+	 * <p>
+	 * <strong>Example</strong>
+	 * <pre>
+	 * bind("name", "Ferris");
+	 * text("${name}");
+	 * </pre>
+	 * @param name never <code>null</code> or empty.
+	 * @param value maybe <code>null</code>.
+	 * @return never <code>null</code>.
+	 */
+	public final T bind(String name, Object value) {
+		notEmpty(name);
 	    bindings.put(name, value);
 	    return getSelf();
 	}
 	
-	public T unbind(String name) {
-	    bindings.remove(name);
+	/**
+	 * Removes a binding.
+	 * There is no failure if the binding does not exist.
+	 * @param name maybe <code>null</code>.
+	 * @return never <code>null</code>.
+	 * @see #bind(String, Object)
+	 */
+	public final T unbind(String name) {
+		if (bindings.containsKey(name))
+			bindings.remove(name);
 	    return getSelf();
 	}
 	
-	public T bind(Collection<Entry<String, Object>> nvps) {
+	/**
+	 * Convenience for {@link #bind(String, Object)}
+	 * @param nvps never <code>null</code>.
+	 * @return never <code>null</code>.
+	 */
+	public final T bind(Collection<Entry<String, Object>> nvps) {
 	    for (Entry<String,Object> nvp : nvps) {
 	        bind(nvp.getKey(), nvp.getValue());
 	    }
 	    return getSelf();
 	}
 	
-	public T start(String tag) {
+	public final T start(String tag) {
 		return start(tag, TagClosingPolicy.NORMAL);
 	}
 	
-	public T start(String tag, TagClosingPolicy policy) {
+	/**
+	 * Starts a tag but does not immediately write it till the next
+	 * tag is started.
+	 * The {@link TagClosingPolicy} dictates whether or not the tag 
+	 * needs to be  {@link #end() closed}. Thus {@link #end()} does not need to be called
+	 * for all tags.
+	 * 
+	 * @param tag never <code>null</code> or empty.
+	 * @param policy never <code>null</code>.
+	 * @return never <code>null</code>.
+	 * @see #end()
+	 */
+	public final T start(String tag, TagClosingPolicy policy) {
 		writeCurrentTag();
 		Tag t = new Tag(tag);
 		t.closePolicy = policy;
@@ -127,7 +193,14 @@ public abstract class MarkupBuilder<T> {
 		return getSelf();
 	}
 	
-	public T attr(String ... attrs ) {
+	/**
+	 * Adds attributes to the last {@link #start(String) start tag}.
+	 * Attributes do not need an {@link #end()} call.
+	 * @param attrs name value pairs. Its invalid for an odd number of arguments.
+	 * @return never <code>null</code>.
+	 * @throws IllegalArgumentException odd number of arguments.
+	 */
+	public final T attr(String ... attrs ) {
 		isTrue(attrs.length  % 2 == 0);
 		for (int n = 0, v = 1; v < attrs.length; n+=2, v+=2) {
 			getAttributes().put(attrs[n], attrs[v]);
@@ -135,14 +208,25 @@ public abstract class MarkupBuilder<T> {
 		return getSelf();
 	}
 	
-	public T end(int i) {
+	/**
+	 * Closes the inputed number of open tags.
+	 * @param i less than zero will do nothing.
+	 * @return never <code>null</code>.
+	 */
+	public final T end(int i) {
 		while ( i-- > 0 && ! tagStack.isEmpty() ) {
 			end();
 		}
 		return getSelf();
 	}
-	
-	public T end() {
+	/**
+	 * Closes the last {@link #start(String) start tag}.
+	 * This is equivalent to <code>&lt;/tag&gt; or &lt;tag/&gt; depending
+	 *  on the {@link TagClosingPolicy}.
+	 * @return never <code>null</code>.
+	 */
+	public final T end() {
+		checkWriter();
 		Tag t = tagStack.peek();
 		writeStartTag(t);
 		writeEndTag(t);
@@ -151,7 +235,12 @@ public abstract class MarkupBuilder<T> {
 		return getSelf();
 	}
 	
-	public T endAll() {
+	/**
+	 * Closes all open tags.
+	 * @return never <code>null</code>.
+	 * @see #end()
+	 */
+	public final T endAll() {
 		while( ! tagStack.isEmpty() ) {
 			end();
 		}
@@ -161,7 +250,7 @@ public abstract class MarkupBuilder<T> {
 	/**
 	 * Call when completely done with the builder.
 	 */
-	public void done() {
+	public final void done() {
 		endAll();
 		if (previousBuilder != null) {
 			isTrue(previousBuilder.writer == null);
@@ -170,6 +259,7 @@ public abstract class MarkupBuilder<T> {
 	}
 	
 	private void writeCurrentTag() {
+		checkWriter();
 		if ( ! tagStack.isEmpty() ) {
 			Tag current = tagStack.peek();
 			if ( current.empty && ! current.end ) {
@@ -244,14 +334,17 @@ public abstract class MarkupBuilder<T> {
 	}
 	
 	private void write(String raw) {
-		notNull(writer, "The current writer is in use by another builder.");
+		checkWriter();
 		try {
 			writer.write(raw);
 		} catch (IOException e) {
 			throw new RuntimeException("Writer for HTML failed:", e);
 		}
 	}
-	protected Map<String, String> createMap() {
+	private void checkWriter() {
+		notNull(writer, "The current writer is in use by another builder.");
+	}
+	private Map<String, String> createMap() {
 		return new LinkedHashMap<String, String>();
 	}
 	
@@ -259,6 +352,12 @@ public abstract class MarkupBuilder<T> {
 		return StringEscapeUtils.escapeXml(raw);
 	}
 	
+	/**
+	 * Indent strategy.
+	 * @param depth never <code>null</code> or less than zero.
+	 * @param tag never <code>null</code>.
+	 * @return never <code>null</code> maybe empty.
+	 */
 	protected String indent(int depth, String tag) {
 		depth += this.depth;
 		StringBuffer sb = new StringBuffer(depth + 1);
@@ -296,19 +395,52 @@ public abstract class MarkupBuilder<T> {
 		
 	}
 	
+	/**
+	 * Policy for how tags should be closed.
+	 * @author adamgent
+	 *
+	 */
 	public enum TagClosingPolicy {
+		/**
+		 * The tag can either be closed with a matching closing tag
+		 * or self closing. It will be self closing if the tag contains
+		 * no child tags or text.
+		 * <ul>
+		 * <li><code>&lt;tag/&gt;</code></li>
+		 * <li><code>&lt;/tag&gt;</code></li>
+		 * </ul>
+		 */
 		NORMAL,
+		/**
+		 * The tag is always a self closing tag.
+		 * <ul>
+		 * <li><code>&lt;tag/&gt;</code></li>
+		 * </ul>
+		 */
 		SELF,
+		/**
+		 * The tag is always closed with a matching closing tag
+		 * regardless if there is no child tag or text.
+		 * <ul>
+		 * <li><code>&lt;tag/&gt;</code></li>
+		 * </ul>
+		 */
 		PAIR;
 		
 		public boolean isAlwaysSelfClosing() {
 			return this == SELF;
 		}
 		
+		/**
+		 * @return <code>true</code> if the tag is allowed to self close.
+		 */
 		public boolean isSelfClosing() {
 			return this == SELF || this == NORMAL;
 		}
 		
+		/**
+		 * @return <code>true</code> if the tag is allowed to close with a matching end tag (<code>&lt;/tag&gt;</code>).
+		 */
 		public boolean isPairClosing() {
 			return this == PAIR || this == NORMAL;
 		}
