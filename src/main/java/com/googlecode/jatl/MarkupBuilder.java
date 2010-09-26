@@ -110,6 +110,7 @@ public abstract class MarkupBuilder<T> {
 	 * @param text the text will be escaped and variables will be expanded.
 	 * @return never <code>null</code>.
 	 * @see #raw(String)
+	 * @see #bind(String, Object)
 	 */
 	public final T text(String text) {
 		if (text != null) {
@@ -446,21 +447,21 @@ public abstract class MarkupBuilder<T> {
 		 */
 		PAIR;
 		
-		public boolean isAlwaysSelfClosing() {
+		public final boolean isAlwaysSelfClosing() {
 			return this == SELF;
 		}
 		
 		/**
 		 * @return <code>true</code> if the tag is allowed to self close.
 		 */
-		public boolean isSelfClosing() {
+		public final boolean isSelfClosing() {
 			return this == SELF || this == NORMAL;
 		}
 		
 		/**
 		 * @return <code>true</code> if the tag is allowed to close with a matching end tag (<code>&lt;/tag&gt;</code>).
 		 */
-		public boolean isPairClosing() {
+		public final boolean isPairClosing() {
 			return this == PAIR || this == NORMAL;
 		}
 	}
