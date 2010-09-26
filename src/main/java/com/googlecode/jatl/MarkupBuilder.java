@@ -104,6 +104,13 @@ public abstract class MarkupBuilder<T> {
 		return attributes;
 	}
 
+	/**
+	 * Writes variable expanded escaped text inside a tag.
+	 * 
+	 * @param text the text will be escaped and variables will be expanded.
+	 * @return never <code>null</code>.
+	 * @see #raw(String)
+	 */
 	public final T text(String text) {
 		if (text != null) {
 			writeCurrentTag();
@@ -112,9 +119,21 @@ public abstract class MarkupBuilder<T> {
 		return getSelf();
 	}
 	
+	/**
+	 * Write text with out escaping or variable expansion.
+	 * @param text
+	 * @return never <code>null</code>.
+	 * @see #raw(String, boolean)
+	 */
 	public final T raw(String text) {
-	    return raw(text, true);
+	    return raw(text, false);
 	}
+	/**
+	 * Writes text with out escaping.
+	 * @param text
+	 * @param expand <code>true</code> does variable expansion.
+	 * @return never <code>null</code>.
+	 */
 	public final T raw(String text, boolean expand) {
 		if (text != null) {
 			writeCurrentTag();
