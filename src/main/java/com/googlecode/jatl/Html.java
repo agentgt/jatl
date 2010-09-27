@@ -18,22 +18,55 @@ package com.googlecode.jatl;
 
 import java.io.Writer;
 
+/**
+ * Most of the XHTML tags and attributes are available as methods.
+ * A rule of thumb is that most tags are zero parameter methods and attribute
+ * methods are single parameter.
+ * <p>
+ * <strong>Example:</strong>
+ * <pre>
+ * new Html(writer) {{
+ * 	html().head();
+ * 	title().text("Hello").end();
+ *	h1().id("title").text("World").end();
+ * 	done();
+ * }};
+ * </pre>
+ * @author adamgent
+ */
 public class Html extends HtmlBuilder<Html> {
 
+
+	/**
+	 * See {@link MarkupBuilder#MarkupBuilder(Writer)}
+	 * @param writer never <code>null</code>.
+	 */
 	public Html(Writer writer) {
 		super(writer);
 	}
 	
+	/**
+	 * See {@link MarkupBuilder#MarkupBuilder(MarkupBuilder)}
+	 * @param builder never <code>null</code>.
+	 */
 	public Html(MarkupBuilder<?> builder) {
 		super(builder);
 	}
 	
 	
 
+	/**
+	 * See {@link MarkupBuilder#MarkupBuilder(MarkupBuilder, boolean)}
+	 * @param builder never <code>null</code>.
+	 * @param nested never <code>null</code>.
+	 */
 	public Html(MarkupBuilder<?> builder, boolean nested) {
 		super(builder, nested);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected Html getSelf() {
 		return this;

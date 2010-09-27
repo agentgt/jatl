@@ -22,7 +22,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 
 /**
  * Most of the XHTML tags and attributes are available as methods.
- * A rule of thumb is that most tags are no parameter methods and attribute
+ * A rule of thumb is that most tags are zero parameter methods and attribute
  * methods are single parameter.
  * 
  * @author adamgent

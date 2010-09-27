@@ -35,6 +35,12 @@ import org.apache.commons.lang.text.StrSubstitutor;
 /**
  * Fluent/Builder to write markup to a {@link Writer}.
  * <p>
+ * The Builder part of the name is somewhat misleading as
+ * this class does not store or keep track of all the markup objects created but rather
+ * writes using the writer as soon as it can.
+ * Thus the order of operations performed on this class is very important and should 
+ * follow the order that you would write the markup. 
+ * <p>
  * <em>This class and subclasses are not thread safe.</em>
  * One way to make a builder thread safe is to synchronize on the passed in writer:
  * <pre>
@@ -52,7 +58,7 @@ public abstract class MarkupBuilder<T> {
 	private Map<String, String> attributes = createMap();
 	private Map<String, Object> bindings = new HashMap<String, Object>();
 	private MarkupBuilder<?> previousBuilder = null;
-	protected int depth = 0;
+	private int depth = 0;
 
 	private static final String q = "\"";
 	
@@ -76,7 +82,11 @@ public abstract class MarkupBuilder<T> {
 	
 	/**
 	 * Use for deferred writer.
+	 * The writer should be {@link #setWriter(Writer) set} before 
+	 * the builder is used.
+	 * 
 	 * @see #setWriter(Writer)
+	 * @see MarkupWriter
 	 */
 	protected MarkupBuilder() {
 		
@@ -137,7 +147,7 @@ public abstract class MarkupBuilder<T> {
 		this.writer = writer;
 	}
 	
-	protected final Map<String, String> getAttributes() {
+	private final Map<String, String> getAttributes() {
 		return attributes;
 	}
 
@@ -409,6 +419,13 @@ public abstract class MarkupBuilder<T> {
 		return new LinkedHashMap<String, String>();
 	}
 	
+	/**
+	 * The strategy for escaping markup. 
+	 * The default is escape for XML.
+	 * @param raw maybe <code>null</code>.
+	 * @return maybe <code>null</code> if null for input.
+	 * @see #text(String)
+	 */
 	protected String escapeMarkup(String raw) {
 		return StringEscapeUtils.escapeXml(raw);
 	}
