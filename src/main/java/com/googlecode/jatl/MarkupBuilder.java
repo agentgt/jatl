@@ -36,6 +36,12 @@ import org.apache.commons.lang.text.StrSubstitutor;
  * Fluent/Builder to write markup to a {@link Writer}.
  * <p>
  * <em>This class and subclasses are not thread safe.</em>
+ * One way to make a builder thread safe is to synchronize on the passed in writer:
+ * <pre>
+ * synchronize(writer) {
+ *    new SomeBuilder(writer) {{ }}; 
+ * }
+ * </pre> 
  * @author adamgent
  * @param <T> This should always be parameterized with the exact same 
  * class that is extending the {@link MarkupBuilder} to support fluent style.
@@ -66,6 +72,14 @@ public abstract class MarkupBuilder<T> {
 	 */
 	public MarkupBuilder(MarkupBuilder<?> builder) {
 		this(builder, true);
+	}
+	
+	/**
+	 * Use for deferred writer.
+	 * @see #setWriter(Writer)
+	 */
+	protected MarkupBuilder() {
+		
 	}
 	
 	/**
@@ -110,6 +124,18 @@ public abstract class MarkupBuilder<T> {
 	 * @return the current builder which is usually <code>this</code> object.
 	 */
 	protected abstract T getSelf();
+	
+	/**
+	 * Sets the writer after the builder has been created.
+	 * Only useful with the empty constructor.
+	 * @param writer never <code>null</code>
+	 * @throws IllegalArgumentException if the writer has already been set or the given writer is null.
+	 */
+	public final void setWriter(Writer writer) {
+		isTrue(this.writer == null, "Writer is already set.");
+		notNull(writer, "writer");
+		this.writer = writer;
+	}
 	
 	protected final Map<String, String> getAttributes() {
 		return attributes;
@@ -233,6 +259,7 @@ public abstract class MarkupBuilder<T> {
 	 */
 	public final T attr(String ... attrs ) {
 		isTrue(attrs.length  % 2 == 0);
+		checkWriter();
 		for (int n = 0, v = 1; v < attrs.length; n+=2, v+=2) {
 			getAttributes().put(attrs[n], attrs[v]);
 		}
@@ -375,7 +402,8 @@ public abstract class MarkupBuilder<T> {
 		}
 	}
 	private void checkWriter() {
-		notNull(writer, "The current writer is in use by another builder.");
+		notNull(writer, "The writer has not been seet " +
+				"or is in use by another builder.");
 	}
 	private Map<String, String> createMap() {
 		return new LinkedHashMap<String, String>();

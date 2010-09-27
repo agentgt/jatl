@@ -42,6 +42,10 @@ public abstract class HtmlBuilder<T> extends MarkupBuilder<T> {
 	public HtmlBuilder(MarkupBuilder<?> builder, boolean nested) {
 		super(builder, nested);
 	}
+	
+	protected HtmlBuilder() {
+		super();
+	}
 
 	public T html() {
 		return start("html", TagClosingPolicy.PAIR); 

@@ -19,7 +19,6 @@ package com.googlecode.jatl;
 import static org.junit.Assert.assertEquals;
 
 import java.io.StringWriter;
-import java.io.Writer;
 
 import org.junit.Before;
 import org.junit.Test;
