@@ -86,9 +86,10 @@ public abstract class MarkupBuilder<T> {
 		}
 		this.writer = builder.writer;
 		builder.writer = null;
-		this.previousBuilder = builder;
+		
 		if (nested) {
 			//Clone the previous builders binding
+			this.previousBuilder = builder;
 			this.bindings = new HashMap<String, Object>(builder.bindings);
 		}
 		else {
@@ -98,6 +99,16 @@ public abstract class MarkupBuilder<T> {
 		}
 	}
 	
+	/**
+	 * Needed for fluent style and Java parameterization limitations. 
+	 * Almost all public methods should return whatever this method returns.
+	 * <p>
+	 * Most implementations only have to do:
+	 * <pre>
+	 * return this;
+	 * </pre>
+	 * @return the current builder which is usually <code>this</code> object.
+	 */
 	protected abstract T getSelf();
 	
 	protected final Map<String, String> getAttributes() {
@@ -269,13 +280,15 @@ public abstract class MarkupBuilder<T> {
 	
 	/**
 	 * Call when completely done with the builder.
+	 * This is required for nested builders.
 	 */
 	public final void done() {
-		endAll();
-		if (previousBuilder != null) {
-			isTrue(previousBuilder.writer == null);
-			previousBuilder.writer = writer;
-		}
+			endAll();
+			if (previousBuilder != null) {
+				isTrue(previousBuilder.writer == null);
+				previousBuilder.writer = writer;
+			}
+			this.writer = null;
 	}
 	
 	private void writeCurrentTag() {

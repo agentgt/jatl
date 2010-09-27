@@ -19,6 +19,7 @@ package com.googlecode.jatl;
 import static org.junit.Assert.assertEquals;
 
 import java.io.StringWriter;
+import java.io.Writer;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -127,6 +128,7 @@ public class HtmlBuilderTest {
     				h1().text("Name Games").end();
     				p().id("${id}").text("Hello ${coolName}, and hello").end();
     			makeList("Kyle","Stan", "Eric", "${coolName}");
+    		endAll();
 			done();
 		}
 			Html makeList(String ... names) {
@@ -242,6 +244,73 @@ public class HtmlBuilderTest {
 				"</html>";
 		assertEquals(expected, result);
 		
+	}
+	
+	@Test
+	public void testRaw() throws Exception {
+		new Html(writer) {{
+			html().head().end().body().h1().text("hello").end();
+			div().raw("<crap></crap>").end();
+			endAll();
+		}};
+		String result = writer.getBuffer().toString();
+		String expected = "\n" + 
+				"<html>\n" + 
+				"	<head>\n" + 
+				"	</head>\n" + 
+				"	<body>\n" + 
+				"		<h1>hello\n" + 
+				"		</h1>\n" + 
+				"		<div><crap></crap>\n" + 
+				"		</div>\n" + 
+				"	</body>\n" + 
+				"</html>";
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void testRawExpand() throws Exception {
+		new Html(writer) {{
+			bind("name", "Adam");
+			html().head().end().body().h1().text("hello").end();
+			div().raw("<crap>${name}</crap>", true).end();
+			endAll();
+		}};
+		String result = writer.getBuffer().toString();
+		String expected = "\n" + 
+				"<html>\n" + 
+				"	<head>\n" + 
+				"	</head>\n" + 
+				"	<body>\n" + 
+				"		<h1>hello\n" + 
+				"		</h1>\n" + 
+				"		<div><crap>Adam</crap>\n" + 
+				"		</div>\n" + 
+				"	</body>\n" + 
+				"</html>";
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void testEscapeText() throws Exception {
+		new Html(writer) {{
+			html().head().end().body().h1().text("hello").end();
+			div().text("<crap></crap>").end();
+			done();
+		}};
+		String result = writer.getBuffer().toString();
+		String expected = "\n" + 
+				"<html>\n" + 
+				"	<head>\n" + 
+				"	</head>\n" + 
+				"	<body>\n" + 
+				"		<h1>hello\n" + 
+				"		</h1>\n" + 
+				"		<div>&lt;crap&gt;&lt;/crap&gt;\n" + 
+				"		</div>\n" + 
+				"	</body>\n" + 
+				"</html>";
+		assertEquals(expected, result);
 	}
 	
 }
