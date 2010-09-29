@@ -33,7 +33,8 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.text.StrSubstitutor;
 
 /**
- * Fluent/Builder to write markup to a {@link Writer}.
+ * <a href="http://en.wikipedia.org/wiki/Fluent_interface">Fluent/Builder styled</a> 
+ * to write markup to a {@link Writer}.
  * <p>
  * The Builder part of the name is somewhat misleading as
  * this class does not store or keep track of all the markup objects created but rather
@@ -41,6 +42,29 @@ import org.apache.commons.lang.text.StrSubstitutor;
  * Thus the order of operations performed on this class is very important and should 
  * follow the order that you would write the markup. 
  * <p>
+ * Another important caveat is if you would you would like to make your own 
+ * builder you should subclass this class or a subclass that has generic parameter 
+ * (&lt;T&gt;).
+ * <p>
+ * <em>The custom builder should be parameterized to itself to support fluent style.</em>
+ * <p>
+ * <strong>Example:</strong>
+ * <pre>
+public class MyMarkup extends MarkupBuilder&lt;MyMarkup&gt; {
+
+	public MyMarkup(Writer builder) {
+		super(builder);
+	}
+	protected MyMarkup getSelf() {
+		return this;
+	}
+	
+	public MyMarkup myTag() {
+		return start("myTag");
+	}
+}
+ * </pre>
+ *
  * <em>This class and subclasses are not thread safe.</em>
  * One way to make a builder thread safe is to synchronize on the passed in writer:
  * <pre>

@@ -19,7 +19,7 @@ package com.googlecode.jatl;
 import java.io.Writer;
 
 /**
- * Writes using HTML using an {@link HtmlBuilder}.
+ * Writes HTML using an {@link HtmlBuilder}.
  * 
  * @author agent
  *

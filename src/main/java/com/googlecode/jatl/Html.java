@@ -32,6 +32,11 @@ import java.io.Writer;
  * 	done();
  * }};
  * </pre>
+ * <p>
+ * If you would like to extend an HTML builder <em>DO NOT INHERIT FROM THIS CLASS</em>.
+ * <p>
+ *  Instead inherit from {@link HtmlBuilder} and parameterize with the name of your custom builder.
+ *  <p>
  * @author adamgent
  */
 public class Html extends HtmlBuilder<Html> {

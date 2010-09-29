@@ -8,13 +8,21 @@
   <packaging>jar</packaging>
 
   <name>jatl</name>
-  <description>The maven main core project description</description>
+  <description>Is an extremely lightweight efficient Java library 
+  to generate XHTML or XML in a micro DSL builder/fluent style.
+  </description>
   <url>http://maven.apache.org</url>
   <scm>
-    <url>https://jatl.googlecode.com/hg/</url>
+    <url>${project.scm}</url>
   </scm>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.domain>jatl.googlecode.com</project.domain>
+    <project.site.domain>site.jatl.googlecode.com</project.site.domain>
+    <project.maven.domain>m2.jatl.googlecode.com</project.maven.domain>
+    <project.scm>https://${project.domain}/hg/</project.scm>
+    <project.site.scm>https://${project.site.domain}/hg</project.site.scm>
+    <project.maven.scm>https://${project.maven.domain}/hg</project.maven.scm>
   </properties>
   <inceptionYear>2010</inceptionYear>
     <licenses>
@@ -28,8 +36,8 @@
       </license>
     </licenses>
    <organization>
-      <name>Json-lib</name>
-      <url>http://json-lib.sourceforge.net</url>
+      <name>JATL</name>
+      <url>http://jatl.google.com</url>
    </organization>
 
    <issueManagement>
@@ -78,6 +86,13 @@
     </profiles>
 
     <build>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-scm</artifactId>
+				<version>1.0-beta-6</version>
+			</extension>
+		</extensions>
        <pluginManagement>
             <plugins>
                 <plugin>
@@ -213,6 +228,22 @@
             </plugin>
         </plugins>
     </build>
+    <reporting>
+    	<plugins>
+    		<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.7</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>javadoc</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+    		</plugin>
+    	</plugins>
+    </reporting>
   
   <dependencies>
     <dependency>
@@ -231,20 +262,25 @@
   </dependencies>
   
    <distributionManagement>
-      <repository>
-         <id>sf_release</id>
-         <name>Json-lib repo @ sourceforge.net</name>
-         <url>
-            scp://ssh.sf.net/home/groups/j/js/json-lib/htdocs/m2/repo/release
-         </url>
-      </repository>
-      <snapshotRepository>
-         <id>sf_snapshot</id>
-         <name>SourceForge Snapshot</name>
-         <url>
-            scp://ssh.sf.net/home/groups/j/js/json-lib/htdocs/m2/repo/snapshot
-         </url>
-      </snapshotRepository>
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>google.download.release</id>
+			<name>googlecode release</name>
+			<url>scm:hg:${project.maven.scm}/repo/release</url>
+			<layout>default</layout>
+		</repository>
+		<snapshotRepository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>google.download.snapshot</id>
+			<name>googlecode snapshot</name>
+			<url>scm:hg:${project.maven.scm}/repo/snapshot</url>
+			<layout>default</layout>
+		</snapshotRepository>
+		<site>
+			<id>google.download</id>
+			<name>googlecode site</name>
+			<url>scm:hg:${project.site.scm}/</url>
+		</site>
    </distributionManagement>
    
 </project>
