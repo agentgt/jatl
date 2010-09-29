@@ -4,26 +4,49 @@
 
   <groupId>com.googlecode</groupId>
   <artifactId>jatl</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>jatl</name>
   <description>The maven main core project description</description>
   <url>http://maven.apache.org</url>
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
   <scm>
     <url>https://jatl.googlecode.com/hg/</url>
   </scm>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+  <inceptionYear>2010</inceptionYear>
+    <licenses>
+      <license>
+         <name>The Apache Software License, Version 2.0</name>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+         <distribution>repo</distribution>
+         <comments>
+            This product includes software developed by Adam Gent (http://www.adamgent.com).
+         </comments>
+      </license>
+    </licenses>
+   <organization>
+      <name>Json-lib</name>
+      <url>http://json-lib.sourceforge.net</url>
+   </organization>
 
+   <issueManagement>
+      <system>googlecode</system>
+      <url>http://code.google.com/p/jatl/issues/list</url>
+   </issueManagement>
+
+   <developers>
+      <developer>
+         <name>Adam Gent</name>
+         <email>adam dot gent at evocatus dot com</email>
+         <roles>
+            <role>Original source code developer</role>
+         </roles>
+      </developer>
+   </developers>
+   
     <profiles>
         <profile>
             <id>release-sign-artifacts</id>
@@ -55,6 +78,15 @@
     </profiles>
 
     <build>
+       <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.googlecode.maven-gcu-plugin</groupId>
+                    <artifactId>maven-gcu-plugin</artifactId>
+                    <version>1.0</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -143,7 +175,42 @@
                     </execution>
                 </executions>
             </plugin>
-            
+            <plugin>
+                <groupId>com.googlecode.maven-gcu-plugin</groupId>
+                <artifactId>maven-gcu-plugin</artifactId>
+                <version>1.0</version>
+                <configuration>
+                    <serverId>googlecode</serverId> <!-- default: googlecode -->
+                    <failsOnError>true</failsOnError> <!-- default: false -->
+                    <projectName>jatl</projectName> <!-- default: ${project.artifactId} -->
+                    <uploads>
+                        <upload>
+                            <file>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</file>
+                            <summary>${project.name} sources bundle ${project.version}</summary>
+                            <labels>
+                                <label>Featured</label>
+                                <label>Type-Archive</label>
+                            </labels>
+                        </upload>
+                        <upload>
+                            <file>${project.build.directory}/${project.artifactId}-${project.version}-sources.${project.packaging}</file>
+                            <summary>${project.name} sources bundle ${project.version}</summary>
+                            <labels>
+                                <label>Featured</label>
+                                <label>Type-Archive</label>
+                            </labels>
+                        </upload>
+                        <upload>
+                            <file>${project.build.directory}/${project.artifactId}-${project.version}-javadoc.${project.packaging}</file>
+                            <summary>${project.name} sources bundle ${project.version}</summary>
+                            <labels>
+                                <label>Featured</label>
+                                <label>Type-Archive</label>
+                            </labels>
+                        </upload>
+                    </uploads>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
   
@@ -162,4 +229,22 @@
     	<scope>compile</scope>
     </dependency>
   </dependencies>
+  
+   <distributionManagement>
+      <repository>
+         <id>sf_release</id>
+         <name>Json-lib repo @ sourceforge.net</name>
+         <url>
+            scp://ssh.sf.net/home/groups/j/js/json-lib/htdocs/m2/repo/release
+         </url>
+      </repository>
+      <snapshotRepository>
+         <id>sf_snapshot</id>
+         <name>SourceForge Snapshot</name>
+         <url>
+            scp://ssh.sf.net/home/groups/j/js/json-lib/htdocs/m2/repo/snapshot
+         </url>
+      </snapshotRepository>
+   </distributionManagement>
+   
 </project>
