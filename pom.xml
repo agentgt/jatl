@@ -13,6 +13,7 @@
   </description>
   <url>http://maven.apache.org</url>
   <scm>
+  	<connection>${project.scm}</connection>
     <url>${project.scm}</url>
   </scm>
   <properties>
@@ -92,6 +93,11 @@
 				<artifactId>wagon-scm</artifactId>
 				<version>1.0-beta-6</version>
 			</extension>
+			<extension>
+				<groupId>org.apache.maven.scm</groupId>
+				<artifactId>maven-scm-provider-hg</artifactId>
+				<version>1.4</version>
+			</extension>
 		</extensions>
        <pluginManagement>
             <plugins>
@@ -103,6 +109,14 @@
             </plugins>
         </pluginManagement>
         <plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-scm-plugin</artifactId>
+				<version>1.4</version>
+				<configuration>
+					<connectionType>connection</connectionType>
+				</configuration>
+			</plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -264,20 +278,20 @@
    <distributionManagement>
 		<repository>
 			<uniqueVersion>false</uniqueVersion>
-			<id>google.download.release</id>
+			<id>googlecode</id>
 			<name>googlecode release</name>
 			<url>scm:hg:${project.maven.scm}/repo/release</url>
 			<layout>default</layout>
 		</repository>
 		<snapshotRepository>
 			<uniqueVersion>false</uniqueVersion>
-			<id>google.download.snapshot</id>
+			<id>googlecode</id>
 			<name>googlecode snapshot</name>
 			<url>scm:hg:${project.maven.scm}/repo/snapshot</url>
 			<layout>default</layout>
 		</snapshotRepository>
 		<site>
-			<id>google.download</id>
+			<id>googlecode</id>
 			<name>googlecode site</name>
 			<url>scm:hg:${project.site.scm}/</url>
 		</site>
