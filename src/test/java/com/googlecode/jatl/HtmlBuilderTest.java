@@ -108,8 +108,7 @@ public class HtmlBuilderTest {
 		String result = sw.getBuffer().toString();
 		String expected = "\n" +
 				"<div title=\"first\">\n" + 
-				"	<span id=\"hello\">\n" + 
-				"	</span>\n" + 
+				"	<span id=\"hello\"/>\n" + 
 				"	<div title=\"second\">Second\n" + 
 				"	</div>\n" + 
 				"</div>";
