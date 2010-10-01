@@ -2,9 +2,9 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.googlecode</groupId>
+  <groupId>com.googlecode.jatl</groupId>
   <artifactId>jatl</artifactId>
-  <version>0.0.3-SNAPSHOT</version>
+  <version>0.0.4-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>jatl</name>
@@ -151,6 +151,7 @@
                         <include>**/test/**</include>
                     </includes>
                     <excludes>
+                        <exclude>src/etc/xhtml1-transitional.xsd</exclude>
                         <exclude>target/**</exclude>
                         <exclude>.clover/**</exclude>
                     </excludes>
