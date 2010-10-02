@@ -19,9 +19,23 @@ package com.googlecode.jatl;
 import java.io.Writer;
 
 /**
- * Writes HTML using an {@link HtmlBuilder}.
- * 
+ * Writes HTML using an {@link HtmlBuilder}
+ * by calling {@link #write(Writer)}.
+ * <p>
+ * <strong>Example:</strong><p>
+ * <pre>
+	html = new HtmlWriter() {
+		protected void build() {
+			html().head().end().body();
+			text("Hello");
+			done();
+		}
+	};
+	//Now write.
+	String actual = html.write(writer).getBuffer().toString();
+ * </pre>
  * @author agent
+ * @see MarkupWriter
  *
  */
 public abstract class HtmlWriter extends HtmlBuilder<HtmlWriter> implements MarkupWriter {
@@ -41,6 +55,10 @@ public abstract class HtmlWriter extends HtmlBuilder<HtmlWriter> implements Mark
 		return writer;
 	}
 	
+	/**
+	 * Should build the markup and is called by {@link #write(Writer)}.
+	 * @see MarkupBuilder
+	 */
 	protected abstract void build();
 	
 }

@@ -25,13 +25,13 @@ import org.junit.Test;
 
 public class HtmlWriterTest {
 
-	StringWriter sw = new StringWriter();
-	StringWriter writer = sw;
-	HtmlWriter hw;
+	StringWriter writer = new StringWriter();
+	HtmlWriter html;
 	
 	@Test
 	public void testWriter() throws Exception {
-		hw = new HtmlWriter() {
+		//Do not write yet.
+		html = new HtmlWriter() {
 			@Override
 			protected void build() {
 				html().head().end().body();
@@ -39,7 +39,8 @@ public class HtmlWriterTest {
 				done();
 			}
 		};
-		String actual = hw.write(sw).getBuffer().toString();
+		//Now write.
+		String actual = html.write(writer).getBuffer().toString();
 		String expected = "\n" + 
 				"<html>\n" + 
 				"	<head>\n" + 

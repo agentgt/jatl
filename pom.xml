@@ -4,7 +4,7 @@
 
   <groupId>com.googlecode.jatl</groupId>
   <artifactId>jatl</artifactId>
-  <version>0.0.4-SNAPSHOT</version>
+  <version>0.0.5-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>jatl</name>
@@ -13,8 +13,8 @@
   </description>
   <url>http://maven.apache.org</url>
   <scm>
-  	<connection>${project.scm}</connection>
-    <url>${project.scm}</url>
+  	<connection>scm:hg:${project.scm}</connection>
+    <url>scm:hg:${project.scm}</url>
   </scm>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -96,8 +96,13 @@
 			<extension>
 				<groupId>org.apache.maven.scm</groupId>
 				<artifactId>maven-scm-provider-hg</artifactId>
-				<version>1.4</version>
+				<version>1.0</version>
 			</extension>
+            <extension>
+                <groupId>org.apache.maven.scm</groupId>
+                <artifactId>maven-scm-manager-plexus</artifactId>
+                <version>1.0</version>
+            </extension>
 		</extensions>
        <pluginManagement>
             <plugins>

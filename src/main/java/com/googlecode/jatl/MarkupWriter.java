@@ -21,6 +21,11 @@ import java.io.Writer;
 /**
  * 
  * Wrap builders for deferred writing.
+ * <p>
+ * This is useful when you want to define the markup but do not
+ * have the {@link Writer} yet. This is often the case with
+ * Spring MVC or any MVC framework where the writer is not available
+ * till rendering time.
  * 
  * @author agent
  * @see HtmlWriter
