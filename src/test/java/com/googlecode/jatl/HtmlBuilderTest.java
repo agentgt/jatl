@@ -102,14 +102,19 @@ public class HtmlBuilderTest {
 				span().id("hello").end();
 				div().title("second");
 					text("Second");
+					start("custom1").attr("data", "value").end();
+					start("custom2").text("hello").end();
 				end();
 			end();
 		}};
 		String result = sw.getBuffer().toString();
-		String expected = "\n" +
+		String expected = "\n" + 
 				"<div title=\"first\">\n" + 
 				"	<span id=\"hello\"/>\n" + 
 				"	<div title=\"second\">Second\n" + 
+				"		<custom1 data=\"value\"/>\n" + 
+				"		<custom2>hello\n" + 
+				"		</custom2>\n" + 
 				"	</div>\n" + 
 				"</div>";
 		assertEquals(expected, result);

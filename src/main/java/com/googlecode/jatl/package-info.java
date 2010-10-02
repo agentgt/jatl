@@ -16,5 +16,34 @@
 
 /**
  * For quickstart documentation: <a href="http://jatl.googlecode.com/">http://jatl.googlecode.com/</a>
+ * <p>
+ * <strong>Example</strong><p>
+ * <pre>
+	StringWriter sw = new StringWriter();
+	new Html(sw) {{
+		div().title("first");
+			span().id("hello").end();
+			div().title("second");
+				text("Second");
+				start("custom1").attr("data", "value").end();
+				start("custom2").text("hello").end();
+			end();
+		end();
+	}};
+	String result = sw.getBuffer().toString();
+	String expected = "\n" + 
+			"&lt;div title=\"first\"&gt;\n" + 
+			"	&lt;span id=\"hello\"/&gt;\n" + 
+			"	&lt;div title=\"second\"&gt;Second\n" + 
+			"		&lt;custom1 data=\"value\"/&gt;\n" + 
+			"		&lt;custom2&gt;hello\n" + 
+			"		&lt;/custom2&gt;\n" + 
+			"	&lt;/div&gt;\n" + 
+			"&lt;/div&gt;";
+	assertEquals(expected, result);
+ * </pre>
+ * <p>
+ * See {@link MarkupBuilder}.
  */
 package com.googlecode.jatl;
+
