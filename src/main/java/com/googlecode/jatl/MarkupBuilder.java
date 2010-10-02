@@ -75,6 +75,11 @@ public class MyMarkup extends MarkupBuilder&lt;MyMarkup&gt; {
  * @author adamgent
  * @param <T> This should always be parameterized with the exact same 
  * class that is extending the {@link MarkupBuilder} to support fluent style.
+ * @see TagClosingPolicy
+ * @see #start(String, TagClosingPolicy)
+ * @see #attr(String...)
+ * @see #end()
+ * @see #done()
  */
 public abstract class MarkupBuilder<T> {
 	private Stack<Tag> tagStack = new Stack<Tag>();
@@ -511,13 +516,27 @@ public abstract class MarkupBuilder<T> {
 		 * <li><code>&lt;tag/&gt;</code></li>
 		 * <li><code>&lt;/tag&gt;</code></li>
 		 * </ul>
+		 * <em>Unlike {@link #SELF self closing} tags a {@link #NORMAL} tag must be explicitly closed.</em>
 		 */
 		NORMAL,
+		
 		/**
 		 * The tag is always a self closing tag.
 		 * <ul>
 		 * <li><code>&lt;tag/&gt;</code></li>
 		 * </ul>
+		 * <em>When a tag has this policy the tag can be implicitly closed 
+		 * by {@link MarkupBuilder#start(String, TagClosingPolicy) starting the next tag}:</em><p>
+		 * <pre>
+		 * start("self",TagClosingPolicy.SELF).start("next");
+		 * </pre>
+		 * Result:<p>
+		 * <pre>
+		 * &lt;self/&gt;
+		 * &lt;next&gt;
+		 * ...
+		 * </pre>
+		 * 
 		 */
 		SELF,
 		/**
