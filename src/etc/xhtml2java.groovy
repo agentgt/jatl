@@ -63,7 +63,7 @@ def javaReserved = ["abstract","continue","for","new","switch","assert",
 	"case","enum","instanceof","return","transient","catch","extends","int","short","try","char","final",
 	"interface","static","void","class","finally","long","strictfp","volatile","const","float","native","super","while",
 	"null", "true", "false"]
-def reserved = ['start', 'end', 'attr', 'raw', 'text', 'bind', 'unbind', 'getSelf'] + javaReserved;
+def reserved = ['ns', 'xmlns', 'start', 'end', 'attr', 'raw', 'text', 'bind', 'unbind', 'getSelf'] + javaReserved;
 
 def className = "GeneratedHtmlBuilder"
 print """

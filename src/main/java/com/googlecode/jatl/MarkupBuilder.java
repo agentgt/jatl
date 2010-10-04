@@ -16,6 +16,7 @@
 
 package com.googlecode.jatl;
 
+import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.Validate.isTrue;
 import static org.apache.commons.lang.Validate.notEmpty;
 import static org.apache.commons.lang.Validate.notNull;
@@ -88,6 +89,7 @@ public abstract class MarkupBuilder<T> {
 	private Map<String, Object> bindings = new HashMap<String, Object>();
 	private MarkupBuilder<?> previousBuilder = null;
 	private int depth = 0;
+	private String namespacePrefix = null;
 
 	private static final String q = "\"";
 	
@@ -164,6 +166,39 @@ public abstract class MarkupBuilder<T> {
 	 */
 	protected abstract T getSelf();
 	
+	
+	/**
+	 * Gets the current namespace prefix.
+	 * 
+	 * @return maybe <code>null</code>.
+	 * @see #ns(String)
+	 */
+	public final String ns() {
+		return this.namespacePrefix;
+	}
+
+	/**
+	 * Sets the current namespace prefix. If a tag is started when
+	 * the prefix is set to a non-null non-empty string, the prefix will
+	 * be added in front of the tag.
+	 * <p>
+	 * <strong>Example:</strong><p>
+	 * <pre>
+	 * ns("html").div().end();
+	 * </pre>
+	 * <strong>Result:</strong>
+	 * <p>
+	 * <pre>
+	 * &lt;html:div&gt;&lt;/html:div&gt;
+	 * </pre>
+	 * @param prefix maybe <code>null</code>
+	 * @return this, not <code>null</code>.
+	 */
+	public final T ns(String prefix) {
+		this.namespacePrefix = prefix;
+		return getSelf();
+	}
+
 	/**
 	 * Sets the writer after the builder has been created.
 	 * Only useful with the empty constructor.
@@ -263,7 +298,7 @@ public abstract class MarkupBuilder<T> {
 	    }
 	    return getSelf();
 	}
-	
+
 	/**
 	 * Starts a tag using the default closing policy {@link TagClosingPolicy#NORMAL}.
 	 * <p>
@@ -294,6 +329,7 @@ public abstract class MarkupBuilder<T> {
 		Tag t = new Tag(tag);
 		t.closePolicy = policy;
 		t.depth = tagStack.size();
+		t.prefix = this.namespacePrefix;
 		tagStack.push(t);
 		return getSelf();
 	}
@@ -315,9 +351,33 @@ public abstract class MarkupBuilder<T> {
 	}
 	
 	/**
+	 * Sets the default namespace on the last started tag.
+	 * @param uri if <code>null</code> nothing will happen.
+	 * @return this, never <code>null</code>.
+	 * @see #xmlns(String, String)
+	 */
+	public final T xmlns(String uri) {
+		return xmlns(uri, null);
+	}
+	
+	/**
+	 * Sets an XML namespace.
+	 * @param uri if <code>null</code> nothing will happen.
+	 * @param prefix if <code>null</code> or blank will act 
+	 * 	like the default namespace and no prefix. 
+	 * @return this, never <code>null</code>.
+	 */
+	public final T xmlns(String uri, String prefix) {
+		if (isBlank(uri)) return getSelf();
+		String n = isBlank(prefix) ? "xmlns" : prefix + ":xmlns";
+		return attr(n, uri);
+	}
+	
+	/**
 	 * Closes the inputed number of open tags.
 	 * @param i less than zero will do nothing.
 	 * @return never <code>null</code>.
+	 * @see #end()
 	 */
 	public final T end(int i) {
 		while ( i-- > 0 && ! tagStack.isEmpty() ) {
@@ -391,7 +451,7 @@ public abstract class MarkupBuilder<T> {
 	private void writeStartTag(Tag t) {
 		if ( ! t.end  && ! t.start) {
 			write(indent(t.depth, t.name));
-			writeTag(t.name, t.isSelfClosing());
+			writeTag(t.getQualifiedName(), t.isSelfClosing());
 			t.end = t.isSelfClosing();
 			t.start = true;
 		}
@@ -414,7 +474,7 @@ public abstract class MarkupBuilder<T> {
 		if ( ! t.end ) {
 			int indent = t.depth;
 			write(indent(indent, t.name));
-			write("</" + t.name + ">");
+			write("</" + t.getQualifiedName() + ">");
 			t.end = true;
 		}
 	}
@@ -499,12 +559,17 @@ public abstract class MarkupBuilder<T> {
 		}
 		public int depth = 0;
 		public String name;
+		public String prefix;
 		public boolean empty = true;
 		public boolean start = false;
 		public boolean end = false;
 		
 		public TagClosingPolicy closePolicy = TagClosingPolicy.NORMAL;
 		
+		public String getQualifiedName() {
+			return isBlank(this.prefix) || this.name.contains(":") ? this.name : 
+				this.prefix + ":"  + this.name;
+		}
 		
 		public boolean isSelfClosing() {
 			return empty && closePolicy.isSelfClosing();

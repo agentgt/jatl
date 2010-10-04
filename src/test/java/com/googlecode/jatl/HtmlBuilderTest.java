@@ -16,10 +16,8 @@
 
 package com.googlecode.jatl;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
@@ -350,6 +348,28 @@ public class HtmlBuilderTest {
 				"		<div>&lt;crap&gt;&lt;/crap&gt;\n" + 
 				"		</div>\n" + 
 				"	</body>\n" + 
+				"</html>";
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void testNamespace() throws Exception {
+		new Html(writer) {{
+			html().xmlns("http://www.w3.org/1999/xhtml")
+				.attr("xml:lang", "en")
+				.attr("lang","en");
+			ns("xsl");
+			start("template").attr("match", "body");
+				text("blah");
+			end();
+			done();
+		}};
+		
+		String result = writer.getBuffer().toString();
+		String expected = "\n" + 
+				"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n" + 
+				"	<xsl:template match=\"body\">blah\n" + 
+				"	</xsl:template>\n" + 
 				"</html>";
 		assertEquals(expected, result);
 	}
