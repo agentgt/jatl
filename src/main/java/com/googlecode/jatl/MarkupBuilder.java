@@ -264,6 +264,15 @@ public abstract class MarkupBuilder<T> {
 	    return getSelf();
 	}
 	
+	/**
+	 * Starts a tag using the default closing policy {@link TagClosingPolicy#NORMAL}.
+	 * <p>
+	 * Equivalent to: {@code start("tag", TagClosingPolicy.NORMAL)}.
+	 * 
+	 * @param tag
+	 * @return this, never <code>null</code>.
+	 * @see #start(String, TagClosingPolicy)
+	 */
 	public final T start(String tag) {
 		return start(tag, TagClosingPolicy.NORMAL);
 	}
@@ -321,6 +330,9 @@ public abstract class MarkupBuilder<T> {
 	 * This is equivalent to <code>&lt;/tag&gt; or &lt;tag/&gt; depending
 	 *  on the {@link TagClosingPolicy}.
 	 * @return never <code>null</code>.
+	 * @see #start(String, TagClosingPolicy)
+	 * @see #endAll()
+	 * @see #done()
 	 */
 	public final T end() {
 		checkWriter();
@@ -347,6 +359,9 @@ public abstract class MarkupBuilder<T> {
 	/**
 	 * Call when completely done with the builder.
 	 * This is required for nested builders.
+	 * <p>
+	 * If a builder is used again after {@code done()} is called
+	 * an exception (usually {@link IllegalArgumentException}) will be thrown.
 	 */
 	public final void done() {
 			endAll();
