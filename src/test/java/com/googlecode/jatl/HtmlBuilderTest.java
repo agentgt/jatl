@@ -355,21 +355,33 @@ public class HtmlBuilderTest {
 	@Test
 	public void testNamespace() throws Exception {
 		new Html(writer) {{
-			html().xmlns("http://www.w3.org/1999/xhtml")
+			html()
+				.xmlns("http://www.w3.org/1999/xhtml")
+				.xmlns("http://www.w3.org/1999/XSL/Transform", "xsl")
 				.attr("xml:lang", "en")
 				.attr("lang","en");
 			ns("xsl");
 			start("template").attr("match", "body");
 				text("blah");
 			end();
+			start("xsl:template").attr("match", "title");
+				text("blah");
+			end();
+			ns(null);
+			div().text("no prefix");
 			done();
 		}};
 		
 		String result = writer.getBuffer().toString();
 		String expected = "\n" + 
-				"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n" + 
+				"<html xmlns=\"http://www.w3.org/1999/xhtml\" " +
+				"xsl:xmlns=\"http://www.w3.org/1999/XSL/Transform\" xml:lang=\"en\" lang=\"en\">\n" + 
 				"	<xsl:template match=\"body\">blah\n" + 
 				"	</xsl:template>\n" + 
+				"	<xsl:template match=\"title\">blah\n" + 
+				"	</xsl:template>\n" + 
+				"	<div>no prefix\n" + 
+				"	</div>\n" + 
 				"</html>";
 		assertEquals(expected, result);
 	}
