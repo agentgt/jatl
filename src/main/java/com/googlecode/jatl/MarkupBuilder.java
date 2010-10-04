@@ -351,7 +351,8 @@ public abstract class MarkupBuilder<T> {
 	public final void done() {
 			endAll();
 			if (previousBuilder != null) {
-				isTrue(previousBuilder.writer == null);
+				isTrue(previousBuilder.writer == null, 
+						"The previous builder has its writer set. It should not.");
 				previousBuilder.writer = writer;
 			}
 			this.writer = null;
@@ -489,12 +490,6 @@ public abstract class MarkupBuilder<T> {
 		
 		public TagClosingPolicy closePolicy = TagClosingPolicy.NORMAL;
 		
-		@Override
-		public String toString() {
-			return "Tag [depth=" + depth + ", name=" + name + ", empty="
-					+ empty + ", closed=" + end + ", closePolicy="
-					+ closePolicy + "]";
-		}
 		
 		public boolean isSelfClosing() {
 			return empty && closePolicy.isSelfClosing();

@@ -52,6 +52,7 @@ public abstract class HtmlWriter extends HtmlBuilder<HtmlWriter> implements Mark
 	public <W extends Writer> W write(W writer) {
 		setWriter(writer);
 		build();
+		done();
 		return writer;
 	}
 	

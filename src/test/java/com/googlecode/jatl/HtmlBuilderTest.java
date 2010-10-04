@@ -16,9 +16,12 @@
 
 package com.googlecode.jatl;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.io.StringWriter;
+import java.io.Writer;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -247,6 +250,41 @@ public class HtmlBuilderTest {
 				"</html>";
 		assertEquals(expected, result);
 		
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void setWriter() throws Exception {
+		Html h = new Html(writer) {{
+			div().text("hello").end();
+			done();
+		}};
+		h.setWriter(null);
+	}
+	@Test(expected=IllegalArgumentException.class)
+	public void testInvalidAttributes() throws Exception {
+		new Html(writer) {{
+			div().attr("data","stuff","cat");
+		}};		
+	}
+	
+	@Test
+	public void testMultiAttributes() throws Exception {
+		new Html(writer) {{
+			div().attr("id", "top", "data", "{'a' : 'b>'}");
+			done();
+		}};
+		String actual = writer.getBuffer().toString();
+		String expected = "\n" + 
+				"<div id=\"top\" data=\"{'a' : 'b&gt;'}\">\n" + 
+				"</div>";
+		assertEquals(expected, actual);
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testNullWriter() throws Exception {
+		new Html((Writer)null) {{
+		
+		}};
 	}
 	
 	@Test
