@@ -353,6 +353,17 @@ public class HtmlBuilderTest {
 	}
 	
 	@Test
+	public void testVariableBinding() throws Exception {
+		new Html(writer) {{
+			bind("first", "Adam").bind("last", "Gent");
+			bind("full", "${first} ${last}");
+			text("My name is ${full} but just call me ${first}."); 
+		}};
+		String result = writer.getBuffer().toString();
+		String expected = "My name is Adam Gent but just call me Adam.";
+		assertEquals(result, expected);
+	}
+	@Test
 	public void testNamespace() throws Exception {
 		new Html(writer) {{
 			html()

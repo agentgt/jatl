@@ -34,19 +34,33 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.text.StrSubstitutor;
 
 /**
- * <a href="http://en.wikipedia.org/wiki/Fluent_interface">Fluent/Builder styled</a> 
- * to write markup to a {@link Writer}.
+ * <a href="http://en.wikipedia.org/wiki/Fluent_interface">Fluent styled</a> 
+ * markup builder that writes to a {@link Writer}.
  * 
  * <h2>Description</h2>
+ * Writes XML markup to a {@link Writer}.
  * The Builder part of the name is somewhat misleading as
  * this class does not store or keep track of all the markup objects created but rather
  * writes using the writer as soon as it can.
  * Thus the order of operations performed on this class is very important and should 
- * follow the order that you would write the markup. 
+ * follow the order that you would write the markup.
+ * 
+ * <h2>Usage</h2>
+ * You should not use this class directly but rather one of its subclasses
+ * that is parameterized with itself (see Extending). You generally define the markup you want to write
+ * using Java anonymous classes that extend either a {@link MarkupBuilder} or {@link MarkupWriter}. 
+ * Markup builders write immediately to a writer where as a markup writer 
+ * writes when told to. But again in both cases you generally define the markup with an anonymous class.
+ * <p>
+ * For examples of use its best to see {@link Html} for an XHTML builder which will write XHTML 
+ * markup immediatly or {@link HtmlWriter} which allows you to define XHTML markup then write it later.
+ * <p>
+ * {@link MarkupWriter Markup writers} are more useful for MVC frameworks and {@link MarkupBuilder builders}
+ * are more for convenience.
+ * 
  * <h2>Extending</h2>
- * Another important caveat is if you would you would like to make your own 
- * builder you should subclass this class or a subclass that has generic parameter 
- * (&lt;T&gt;).
+ * If you would you would like to make your own builder you should subclass 
+ * this class or a subclass that has generic parameter (&lt;T&gt;).
  * <p>
  * <em>The custom builder should be parameterized to itself to support fluent style.</em>
  * <p>
@@ -66,14 +80,6 @@ public class MyMarkup extends MarkupBuilder&lt;MyMarkup&gt; {
 	}
 }
  * </pre>
- * <h2>Thread safety</h2>
- * <em>This class and subclasses are not thread safe.</em>
- * One way to make a builder thread safe is to synchronize on the passed in writer:
- * <pre>
- * synchronize(writer) {
- *    new SomeBuilder(writer) {{ }}; 
- * }
- * </pre>
  * 
  * <h2>Writing tags and attributes</h2>
  * See {@link #start(String)} and {@link #end()} for writing tags.
@@ -90,8 +96,30 @@ public class MyMarkup extends MarkupBuilder&lt;MyMarkup&gt; {
  * The following Nested builders are very helpful for working with multiple XML schemas.
  * 
  * <h2>Nested builders</h2>
- * Nested builders are an easy way to allow different markup styles to coexist.
+ * Nested builders are an easy way to allow different markup styles to coexist elegantly.
+ * An example might be HTML with in XSL. You would have an HTML builder nested inside
+ * the XSL builder.<p>
+ * <strong>Example:</strong>
+ * <pre>
+ * new Xslt(writer) {{
+ * 	ns("xsl");
+ * 	template().match("stuff");
+ * 		new Html(writer) {{
+ * 			html().body().done();
+ * 		}}
+ * 	done();
+ * }}
+ * </pre>
  * See {@link #MarkupBuilder(MarkupBuilder)}.
+ * 
+ * <h2>Thread safety</h2>
+ * <em>This class and subclasses are not thread safe.</em>
+ * One way to make a builder thread safe is to synchronize on the passed in writer:
+ * <pre>
+ * synchronize(writer) {
+ *    new SomeBuilder(writer) {{ }}; 
+ * }
+ * </pre>
  *  
  * @author adamgent
  * @param <T> This should always be parameterized with the exact same 
@@ -294,13 +322,22 @@ public abstract class MarkupBuilder<T> {
 	 * bind("name", "Ferris");
 	 * text("${name}");
 	 * </pre>
+	 * <p>
+	 * <em>Variables are expanded in order and can be referred in a later binding.</em>
+	 * <p>
+	 * <pre>
+	 * bind("firstName", "Adam");
+	 * bind("lastName", "Gent");
+	 * bind("fullName", "${firstName} ${lastName}");
+	 * </pre>
 	 * @param name never <code>null</code> or empty.
 	 * @param value maybe <code>null</code>.
 	 * @return never <code>null</code>.
 	 */
 	public final T bind(String name, Object value) {
 		notEmpty(name);
-	    bindings.put(name, value);
+		Object v = value != null && value instanceof String ? expand(value.toString()) : value;
+	    bindings.put(name, v);
 	    return getSelf();
 	}
 	

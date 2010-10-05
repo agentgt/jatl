@@ -43,7 +43,7 @@
 	assertEquals(expected, result);
  * </pre>
  * <p>
- * See {@link com.googlecode.jatl.MarkupBuilder}.
+ * See {@link com.googlecode.jatl.MarkupBuilder} for creating your own markup builders.
  */
 package com.googlecode.jatl;
 
