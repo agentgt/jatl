@@ -363,6 +363,9 @@ public class HtmlBuilderTest {
 			ns("xsl");
 			start("template").attr("match", "body");
 				text("blah");
+				ns();
+				//Should have xsl prefix
+				span().end();
 			end();
 			start("xsl:template").attr("match", "title");
 				text("blah");
@@ -377,6 +380,7 @@ public class HtmlBuilderTest {
 				"<html xmlns=\"http://www.w3.org/1999/xhtml\" " +
 				"xsl:xmlns=\"http://www.w3.org/1999/XSL/Transform\" xml:lang=\"en\" lang=\"en\">\n" + 
 				"	<xsl:template match=\"body\">blah\n" + 
+				"		<xsl:span/>\n" + 
 				"	</xsl:template>\n" + 
 				"	<xsl:template match=\"title\">blah\n" + 
 				"	</xsl:template>\n" + 

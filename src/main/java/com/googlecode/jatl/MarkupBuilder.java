@@ -36,13 +36,14 @@ import org.apache.commons.lang.text.StrSubstitutor;
 /**
  * <a href="http://en.wikipedia.org/wiki/Fluent_interface">Fluent/Builder styled</a> 
  * to write markup to a {@link Writer}.
- * <p>
+ * 
+ * <h2>Description</h2>
  * The Builder part of the name is somewhat misleading as
  * this class does not store or keep track of all the markup objects created but rather
  * writes using the writer as soon as it can.
  * Thus the order of operations performed on this class is very important and should 
  * follow the order that you would write the markup. 
- * <p>
+ * <h2>Extending</h2>
  * Another important caveat is if you would you would like to make your own 
  * builder you should subclass this class or a subclass that has generic parameter 
  * (&lt;T&gt;).
@@ -65,14 +66,33 @@ public class MyMarkup extends MarkupBuilder&lt;MyMarkup&gt; {
 	}
 }
  * </pre>
- *
+ * <h2>Thread safety</h2>
  * <em>This class and subclasses are not thread safe.</em>
  * One way to make a builder thread safe is to synchronize on the passed in writer:
  * <pre>
  * synchronize(writer) {
  *    new SomeBuilder(writer) {{ }}; 
  * }
- * </pre> 
+ * </pre>
+ * 
+ * <h2>Writing tags and attributes</h2>
+ * See {@link #start(String)} and {@link #end()} for writing tags.
+ * See {@link #attr(String...)} for writting attributes.
+ * 
+ * <h2>Variable expansion</h2>
+ * Simple named variable replacements are supported through the <pre>${...}</pre> notation.
+ * See {@link #bind(String, Object)}, and {@link #text(String)}.
+ * 
+ * <h2>Namespaces</h2>
+ * You can either manually maintain namespaces and namespace prefixes by setting the correct attributes and 
+ * then writing tags with the namespace prefix. Example: {@code start("prefix:tagName")}.
+ * Or you can use the namespace methods: {@link #ns()}, {@link #ns(String)}, {@link #xmlns(String, String)}
+ * The following Nested builders are very helpful for working with multiple XML schemas.
+ * 
+ * <h2>Nested builders</h2>
+ * Nested builders are an easy way to allow different markup styles to coexist.
+ * See {@link #MarkupBuilder(MarkupBuilder)}.
+ *  
  * @author adamgent
  * @param <T> This should always be parameterized with the exact same 
  * class that is extending the {@link MarkupBuilder} to support fluent style.
@@ -105,7 +125,11 @@ public abstract class MarkupBuilder<T> {
 	
 	/**
 	 * Create a nested builder from given builder.
-	 * @param builder never <code>null</code>. 
+	 * Make sure {@link #done()} is called when finished with the
+	 * nested builder so that the parent builder can resume using the writer.
+	 * 
+	 * @param builder parent builder, never <code>null</code>. 
+	 * @see #done()
 	 */
 	public MarkupBuilder(MarkupBuilder<?> builder) {
 		this(builder, true);
@@ -168,13 +192,19 @@ public abstract class MarkupBuilder<T> {
 	
 	
 	/**
-	 * Gets the current namespace prefix.
-	 * 
+	 * Restores the current namespace prefix
+	 * to whatever the surrounding tags prefix is.
+	 * To set the namespace to the default namespace call:
+	 * <p>
+	 * {@code ns(null);}
 	 * @return maybe <code>null</code>.
 	 * @see #ns(String)
 	 */
-	public final String ns() {
-		return this.namespacePrefix;
+	public final T ns() {
+		if (tagStack.isEmpty()) {
+			return ns(null);
+		}
+		return ns(tagStack.peek().prefix);
 	}
 
 	/**
