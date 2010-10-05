@@ -15,7 +15,7 @@
  */
 
 /**
- * For quickstart documentation: <a href="http://jatl.googlecode.com/">http://jatl.googlecode.com/</a>
+ * For quickstart documentation: <a href="http://jatl.googlecode.com/">http://jatl.googlecode.com/</a> and {@link com.googlecode.jatl.MarkupBuilder}.
  * <p>
  * <strong>Example</strong><p>
  * <pre>
