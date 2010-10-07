@@ -22,6 +22,8 @@ import static org.apache.commons.lang.Validate.notEmpty;
 import static org.apache.commons.lang.Validate.notNull;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.HashMap;
@@ -120,7 +122,22 @@ public class MyMarkup extends MarkupBuilder&lt;MyMarkup&gt; {
  *    new SomeBuilder(writer) {{ }}; 
  * }
  * </pre>
- *  
+ * <h2>Efficiency and Validation</h2>
+ * To keep the builder efficient and elegant there is very little XML validation.
+ * There is no guarantee that the markup generated will always be well formed.
+ * Generally {@link #text(String) Text} will be escaped appropriately.
+ * <p>
+ * <em>For those seriously concerned with performance an appropriate implementation of 
+ * {@link Writer} should be given to the builder.</em>
+ * <p>
+ * For example: In a single threaded environment where you are writing to memory 
+ * <a href="http://commons.apache.org/io/apidocs/org/apache/commons/io/output/StringBuilderWriter.html">
+ * Commons IO StringBuilderWriter
+ * </a> is a good choice over {@link StringWriter}.
+ * <p>
+ * On the other hand if you are writing very large XML document to a file 
+ * or network socket {@link PrintWriter} is probably a better choice.
+ * 
  * @author adamgent
  * @param <T> This should always be parameterized with the exact same 
  * class that is extending the {@link MarkupBuilder} to support fluent style.
