@@ -16,6 +16,7 @@
 
 package com.googlecode.jatl;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
 import java.io.StringWriter;
@@ -398,6 +399,125 @@ public class HtmlBuilderTest {
 				"	<div>no prefix\n" + 
 				"	</div>\n" + 
 				"</html>";
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void testTable() throws Exception {
+		new Html(writer) {{
+			table().width("100%").height("100%");
+			thead().tr();
+			for (String header : asList("A","B","C")) {
+				th().text(header).end();
+			}
+			end().end();
+			tbody();
+			for (int i = 0; i < 3; i++) {
+				tr();
+				for(String cell : asList("a","b","c")) {
+					td().text(cell).end();
+				}
+				end();
+			}
+			done();
+		}};
+		
+		String result = writer.getBuffer().toString();
+		String expected = "\n" + 
+				"<table width=\"100%\" height=\"100%\">\n" + 
+				"	<thead>\n" + 
+				"		<tr>\n" + 
+				"			<th>A\n" + 
+				"			</th>\n" + 
+				"			<th>B\n" + 
+				"			</th>\n" + 
+				"			<th>C\n" + 
+				"			</th>\n" + 
+				"		</tr>\n" + 
+				"	</thead>\n" + 
+				"	<tbody>\n" + 
+				"		<tr>\n" + 
+				"			<td>a\n" + 
+				"			</td>\n" + 
+				"			<td>b\n" + 
+				"			</td>\n" + 
+				"			<td>c\n" + 
+				"			</td>\n" + 
+				"		</tr>\n" + 
+				"		<tr>\n" + 
+				"			<td>a\n" + 
+				"			</td>\n" + 
+				"			<td>b\n" + 
+				"			</td>\n" + 
+				"			<td>c\n" + 
+				"			</td>\n" + 
+				"		</tr>\n" + 
+				"		<tr>\n" + 
+				"			<td>a\n" + 
+				"			</td>\n" + 
+				"			<td>b\n" + 
+				"			</td>\n" + 
+				"			<td>c\n" + 
+				"			</td>\n" + 
+				"		</tr>\n" + 
+				"	</tbody>\n" + 
+				"</table>";
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void testHeaders() throws Exception {
+		new Html(writer) {{
+			String title = "Header ";
+			int i = 1;
+			h1().text(title + i++ ).end();
+			h2().text(title + i++).end();
+			h3().text(title + i++).end();
+			h4().text(title + i++).end();
+			h5().text(title + i++).end();
+			h6().text(title + i++).end();
+		}};
+		String result = writer.getBuffer().toString();
+		String expected = "\n" + 
+				"<h1>Header 1\n" + 
+				"</h1>\n" + 
+				"<h2>Header 2\n" + 
+				"</h2>\n" + 
+				"<h3>Header 3\n" + 
+				"</h3>\n" + 
+				"<h4>Header 4\n" + 
+				"</h4>\n" + 
+				"<h5>Header 5\n" + 
+				"</h5>\n" + 
+				"<h6>Header 6\n" + 
+				"</h6>";
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void testHead() throws Exception {
+		new Html(writer) {{
+			head();
+				title().text("Hello World").end();
+				link().href("http://").media("screen").rel("stylesheet").type("text/css");
+				meta().name("medium").content("blog");
+				script().type("text/javascript").src("blah.js").end();
+				style().type("text/css")
+					.text("");
+			done();
+		}};
+		String result = writer.getBuffer().toString();
+		String expected = "\n" + 
+				"<head>\n" + 
+				"	<title>Hello World\n" + 
+				"	</title>\n" + 
+				"	<link href=\"http://\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\"/>\n" + 
+				"	<meta name=\"medium\" content=\"blog\"/>\n" + 
+				"	<script type=\"text/javascript\" src=\"blah.js\">\n" + 
+				"	</script>\n" + 
+				"	<style type=\"text/css\">\n" + 
+				"	</style>\n" + 
+				"</head>";
 		assertEquals(expected, result);
 	}
 	
