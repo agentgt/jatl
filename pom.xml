@@ -1,9 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.googlecode.jatl</groupId>
   <artifactId>jatl</artifactId>
-  <version>0.1.0</version>
+  <version>0.0.5-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>jatl</name>
@@ -26,9 +27,9 @@
     <version>5</version>
   </parent>
   <scm>
-    <connection>scm:hg:${project.scm}</connection>
-    <developerConnection>scm:hg:${project.scm}</developerConnection>
-    <url>${project.scm}</url>
+    <connection>scm:hg:https://jatl.googlecode.com/hg/</connection>
+    <developerConnection>scm:hg:https://jatl.googlecode.com/hg/</developerConnection>
+    <url>https://jatl.googlecode.com/hg/</url>
   </scm>
   <inceptionYear>2010</inceptionYear>
     <licenses>
