@@ -508,13 +508,13 @@ public abstract class MarkupBuilder<T> {
 	 * an exception (usually {@link IllegalArgumentException}) will be thrown.
 	 */
 	public final void done() {
-			endAll();
-			if (previousBuilder != null) {
-				isTrue(previousBuilder.writer == null, 
-						"The previous builder has its writer set. It should not.");
-				previousBuilder.writer = writer;
-			}
-			this.writer = null;
+		endAll();
+		if (previousBuilder != null) {
+			isTrue(previousBuilder.writer == null, 
+					"The previous builder has its writer set. It should not.");
+			previousBuilder.writer = writer;
+		}
+		this.writer = null;
 	}
 	
 	private void writeCurrentTag() {
