@@ -913,11 +913,11 @@ abstract class GeneratedHtmlBuilder<T> extends MarkupBuilder<T> {
 	 * Starts the &lt;textarea&gt; tag.
 	 * [multi-line text field]
 	 * <p>
-	 * Tag Closing Policy: {@link MarkupBuilder.TagClosingPolicy#NORMAL}
+	 * Tag Closing Policy: {@link MarkupBuilder.TagClosingPolicy#PAIR}
 	 * @return this, never <code>null</code> 
 	 */
 	public T textarea() {
-		return start("textarea", TagClosingPolicy.NORMAL);
+		return start("textarea", TagClosingPolicy.PAIR);
 	}
 
 	/**
