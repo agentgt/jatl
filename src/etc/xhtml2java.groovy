@@ -34,7 +34,7 @@ def elements = root[xs.element].findAll{ it.'@name' };
 def es = [];
 for (e in elements) {
 	def type;
-	if (e.'@name' in ['div', 'script'])
+	if (e.'@name' in ['div', 'script', 'textarea'])
 		type = "pair";
 	else if (e[xs.complexType][xs.sequence])
 		type = "pair";
