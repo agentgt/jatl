@@ -521,4 +521,16 @@ public class HtmlBuilderTest {
 		assertEquals(expected, result);
 	}
 	
+	@Test //http://code.google.com/p/jatl/issues/detail?id=3
+	public void testIssue3() throws Exception {
+		new Html(writer).div().textarea().cols("1").rows("1").end().text("Message:").end();
+		String result = writer.getBuffer().toString();
+		String expected ="\n" + 
+				"<div>\n" + 
+				"	<textarea cols=\"1\" rows=\"1\">\n" + 
+				"	</textarea>Message:\n" + 
+				"</div>";
+		assertEquals(expected, result);
+	}
+	
 }
