@@ -35,6 +35,8 @@ import java.util.Stack;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.text.StrSubstitutor;
 
+import com.googlecode.jatl.Indenter.TagIndentSpot;
+
 /**
  * <a href="http://en.wikipedia.org/wiki/Fluent_interface">Fluent styled</a> 
  * markup builder that writes to a {@link Writer}.
@@ -155,6 +157,8 @@ public abstract class MarkupBuilder<T> {
 	private MarkupBuilder<?> previousBuilder = null;
 	private int depth = 0;
 	private String namespacePrefix = null;
+	private Indenter previousIndenter = indentOn;
+	private Indenter indenter = indentOn;
 
 	private static final String q = "\"";
 	
@@ -284,6 +288,16 @@ public abstract class MarkupBuilder<T> {
 		isTrue(this.writer == null, "Writer is already set.");
 		notNull(writer, "writer");
 		this.writer = writer;
+	}
+	
+	public T indent(Indenter indenter) {
+		if (indenter == null) 
+			this.indenter = previousIndenter;
+		else {
+			this.previousIndenter = this.indenter;
+			this.indenter = indenter;
+		}
+		return getSelf();
 	}
 	
 	private final Map<String, String> getAttributes() {
@@ -534,8 +548,12 @@ public abstract class MarkupBuilder<T> {
 	
 	private void writeStartTag(Tag t) {
 		if ( ! t.end  && ! t.start) {
-			write(indent(t.depth, t.name));
+			writeIndent(t, TagIndentSpot.BEFORE_START_TAG);
 			writeTag(t.getQualifiedName(), t.isSelfClosing());
+			writeIndent(t, TagIndentSpot.AFTER_START_TAG);
+			if (t.isSelfClosing()) {
+				writeIndent(t, TagIndentSpot.AFTER_END_TAG);
+			}
 			t.end = t.isSelfClosing();
 			t.start = true;
 		}
@@ -556,10 +574,10 @@ public abstract class MarkupBuilder<T> {
 	
 	private void writeEndTag(Tag t) {
 		if ( ! t.end ) {
-			int indent = t.depth;
-			write(indent(indent, t.name));
+			writeIndent(t, TagIndentSpot.BEFORE_END_TAG);
 			write("</" + t.getQualifiedName() + ">");
 			t.end = true;
+			writeIndent(t, TagIndentSpot.AFTER_END_TAG);
 		}
 	}
 	
@@ -597,7 +615,7 @@ public abstract class MarkupBuilder<T> {
 		try {
 			writer.write(raw);
 		} catch (IOException e) {
-			throw new RuntimeException("Writer for HTML failed:", e);
+			throw new RuntimeException("Writer for Builder failed:", e);
 		}
 	}
 	private void checkWriter() {
@@ -634,6 +652,21 @@ public abstract class MarkupBuilder<T> {
 		}
 		return sb.toString();
 	}
+	
+	private void writeIndent(
+			Tag t,
+			TagIndentSpot spot) {
+		try {
+			indenter.indentTag(this.writer, t.depth, this.depth, 
+					spot, t.name, t.closePolicy, t.empty);
+		} catch (IOException e) {
+			throw new RuntimeException("Builder Indenting failed:", e);
+		}	
+	}
+	
+	protected static Indenter indentOn = new SimpleIndenter("\n", "\t", "\n", "\t");
+	protected static Indenter indentOff = new SimpleIndenter(null, null, null, null);
+	protected static Indenter indentSameLine = new SimpleIndenter("\n", "\t", null, null);
 	
 	private static class Tag {
 		

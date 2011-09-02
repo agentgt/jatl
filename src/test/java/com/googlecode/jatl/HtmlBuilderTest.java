@@ -533,4 +533,24 @@ public class HtmlBuilderTest {
 		assertEquals(expected, result);
 	}
 	
+	@Test
+	public void testIndenter() throws Exception {
+		new Html(writer) {{
+			bind("name", "Adam");
+			html().head().indent(indentSameLine).end().body().indent(indentOn).h1().indent(indentOff).text("hello").end();
+			div().indent(indentOn).raw("<crap>${name}</crap>", true).end();
+			endAll();
+		}};
+		String result = writer.getBuffer().toString();
+		String expected = "\n" + 
+				"<html>\n" + 
+				"	<head></head>\n" + 
+				"	<body><h1>hello</h1>\n" + 
+				"		<div><crap>Adam</crap>\n" + 
+				"		</div>\n" + 
+				"	</body>\n" + 
+				"</html>";
+		assertEquals(expected, result);
+	}	
+	
 }
