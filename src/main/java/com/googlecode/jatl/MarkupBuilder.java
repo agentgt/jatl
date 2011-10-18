@@ -290,6 +290,14 @@ public abstract class MarkupBuilder<T> {
 		this.writer = writer;
 	}
 	
+	/**
+	 * Sets the indenter.
+	 * @param indenter if <code>null</code> reverts to the previous builder.
+	 * @return the builder.
+	 * @see #indentOn
+	 * @see #indentOff
+	 * @see #indentSameLine
+	 */
 	public T indent(Indenter indenter) {
 		if (indenter == null) 
 			this.indenter = previousIndenter;
@@ -664,8 +672,17 @@ public abstract class MarkupBuilder<T> {
 		}	
 	}
 	
+	/**
+	 * A default indenter that uses tabs.
+	 */
 	protected static Indenter indentOn = new SimpleIndenter("\n", "\t", "\n", "\t");
+	/**
+	 * An indenter that turns off indenting.
+	 */
 	protected static Indenter indentOff = new SimpleIndenter(null, null, null, null);
+	/**
+	 * Indents by keeping a tag pair on the same line. 
+	 */
 	protected static Indenter indentSameLine = new SimpleIndenter("\n", "\t", null, null);
 	
 	private static class Tag {

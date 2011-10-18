@@ -18,6 +18,16 @@ package com.googlecode.jatl;
 
 import java.io.IOException;
 
+/**
+ * 
+ * A simple indenter that takes a String for 
+ * before and after on the opening and closing tag.
+ * <p>
+ * <b>EXPERIMENTAL MAY CHANGE</b>
+ * 
+ * @author agent
+ *
+ */
 public class SimpleIndenter implements Indenter {
 
 	private String startTagNewLine =  "\n";
@@ -25,6 +35,15 @@ public class SimpleIndenter implements Indenter {
 	private String endTagNewLine = "\n";
 	private String endTagIndent = "\t";
 	
+	/**
+	 * 
+	 * <b>EXPERIMENTAL MAY CHANGE</b>
+	 * 
+	 * @param startTagNewLine null not recommended.
+	 * @param startTagIndent null not recommended.
+	 * @param endTagNewLine null not recommended.
+	 * @param endTagIndent null not recommended.
+	 */
 	public SimpleIndenter(String startTagNewLine, String startTagIndent, String endTagNewLine, String endTagIndent) {
 		super();
 		this.startTagNewLine = startTagNewLine;
@@ -33,6 +52,9 @@ public class SimpleIndenter implements Indenter {
 		this.endTagIndent = endTagIndent;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void indentTag(Appendable a, int innerDepth, int outerDepth, TagIndentSpot spot, String tag,
 			MarkupBuilder.TagClosingPolicy p, boolean empty) throws IOException {
 		int depth = innerDepth + outerDepth;
