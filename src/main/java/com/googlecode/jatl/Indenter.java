@@ -20,9 +20,30 @@ import java.io.IOException;
 
 import com.googlecode.jatl.MarkupBuilder.TagClosingPolicy;
 
-
+/**
+ * A strategy to indent or in other words pretty print
+ * the markup.
+ * <p>
+ * <b>EXPERIMENTAL MAY CHANGE</b>
+ * @author agent
+ *
+ */
 public interface Indenter {
 	
+	/**
+	 * Called by the builder to provide whitespace decoration.
+	 * The arguments provides context of what tag, kind of tag and closing policy etc.
+	 * <p>
+	 * <b>EXPERIMENTAL MAY CHANGE</b>
+	 * @param a writer like object where indenting decoration is to be applied.
+	 * @param innerDepth current indent depth inside the current builder.
+	 * @param outerDepth starting depth based on the outside builder if there is one. Usually this is zero.
+	 * @param spot current position that white space is to be applied.
+	 * @param tag the tag to be indented, not <code>null</code>.
+	 * @param p closing policy for the tag to be indented.
+	 * @param empty if the tag is empty.
+	 * @throws IOException
+	 */
 	public void indentTag(
 			Appendable a,
 			int innerDepth, 
@@ -30,10 +51,29 @@ public interface Indenter {
 			TagIndentSpot spot, 
 			String tag, TagClosingPolicy p, boolean empty) throws IOException;
 	
+	/**
+	 * Indicates the current position (cursor) of where whitespace is to be applied.
+	 * <p>
+	 * <b>EXPERIMENTAL MAY CHANGE</b>
+	 * @author agent
+	 *
+	 */
 	public static enum TagIndentSpot {
+		/**
+		 * Indicates position is before &lt;tag&gt;
+		 */
 		BEFORE_START_TAG,
+		/**
+		 * Indicates position is after &lt;tag&gt;
+		 */
 		AFTER_START_TAG,
+		/**
+		 * Indicates position is before &lt;/tag&gt;
+		 */
 		BEFORE_END_TAG,
+		/**
+		 * Indicates position is after &lt;/tag&gt;
+		 */
 		AFTER_END_TAG
 	}
 }
