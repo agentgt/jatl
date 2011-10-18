@@ -3,7 +3,7 @@
 
   <groupId>com.googlecode.jatl</groupId>
   <artifactId>jatl</artifactId>
-  <version>0.1.2-SNAPSHOT</version>
+  <version>0.2.0</version>
   <packaging>jar</packaging>
 
   <name>jatl</name>
@@ -140,7 +140,7 @@
                 						</goals>
                 					</pluginExecutionFilter>
                 					<action>
-                						<ignore></ignore>
+                						<ignore />
                 					</action>
                 				</pluginExecution>
                 			</pluginExecutions>
