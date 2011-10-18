@@ -645,22 +645,6 @@ public abstract class MarkupBuilder<T> {
 		return StringEscapeUtils.escapeXml(raw);
 	}
 	
-	/**
-	 * Indent strategy.
-	 * @param depth never <code>null</code> or less than zero.
-	 * @param tag never <code>null</code>.
-	 * @return never <code>null</code> maybe empty.
-	 */
-	protected String indent(int depth, String tag) {
-		depth += this.depth;
-		StringBuffer sb = new StringBuffer(depth + 1);
-		sb.append("\n");
-		for (int i = 0; i < depth; i++) {
-			sb.append("\t");
-		}
-		return sb.toString();
-	}
-	
 	private void writeIndent(
 			Tag t,
 			TagIndentSpot spot) {
