@@ -93,6 +93,9 @@ public class MyMarkup extends MarkupBuilder&lt;MyMarkup&gt; {
  * Simple named variable replacements are supported through the <pre>${...}</pre> notation.
  * See {@link #bind(String, Object)}, and {@link #text(String)}.
  * 
+ * <h2>Pretty Printing aka Indenting</h2>
+ * See #indent  {@link Indenter}. For most cases you can use {@link SimpleIndenter}
+ * 
  * <h2>Namespaces</h2>
  * You can either manually maintain namespaces and namespace prefixes by setting the correct attributes and 
  * then writing tags with the namespace prefix. Example: {@code start("prefix:tagName")}.
