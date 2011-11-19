@@ -26,7 +26,7 @@ import com.googlecode.jatl.MarkupBuilder.TagClosingPolicy;
  * <p>
  * <b>EXPERIMENTAL MAY CHANGE</b>
  * @author agent
- *
+ * @see MarkupBuilder#indent(Indenter)
  */
 public interface Indenter {
 	
@@ -42,6 +42,7 @@ public interface Indenter {
 	 * @param tag the tag to be indented, not <code>null</code>.
 	 * @param p closing policy for the tag to be indented.
 	 * @param empty if the tag is empty.
+	 * @see MarkupBuilder#indent(Indenter)
 	 * @throws IOException
 	 */
 	public void indentTag(
