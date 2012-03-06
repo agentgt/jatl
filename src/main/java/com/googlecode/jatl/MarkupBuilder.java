@@ -326,7 +326,7 @@ public abstract class MarkupBuilder<T> {
 	public final T text(String text) {
 		if (text != null) {
 			writeCurrentTag();
-			write(escapeMarkup(expand(text)));
+			write(escapeElementMarkup(expand(text)));
 		}
 		return getSelf();
 	}
@@ -613,7 +613,7 @@ public abstract class MarkupBuilder<T> {
 		}		
 	}
 	private String q(String raw) {
-		return q + escapeMarkup(expand(raw)) + q;
+		return q + escapeAttributeMarkup(expand(raw)) + q;
 	}
 	
 	private String expand(String text) {
@@ -638,14 +638,40 @@ public abstract class MarkupBuilder<T> {
 	}
 	
 	/**
-	 * The strategy for escaping markup. 
+	 * DEPRECATED.
+	 * @param raw maybe <code>null</code>.
+	 * @return maybe <code>null</code> if null for input.
+	 * @see #text(String)
+	 * @deprecated Please use {@link #escapeElementMarkup(String)} and {@link #escapeAttributeMarkup(String)}
+	 */
+	protected String escapeMarkup(String raw) {
+		return MarkupUtils.escapeElementEntities(raw);
+	}
+	
+	/**
+	 * The strategy for escaping element markup. 
 	 * The default is escape for XML.
 	 * @param raw maybe <code>null</code>.
 	 * @return maybe <code>null</code> if null for input.
 	 * @see #text(String)
+	 * @see #escapeAttributeMarkup(String)
 	 */
-	protected String escapeMarkup(String raw) {
-		return StringEscapeUtils.escapeXml(raw);
+	@SuppressWarnings("deprecation")
+	protected String escapeElementMarkup(String raw) {
+		return escapeMarkup(raw);
+	}
+	
+	/**
+	 * The strategy for escaping attribute markup.
+	 * The default escaping is XML. 
+	 * Entities will be used for white space characters:
+	 * <code>#xD, #xA, #x9</code><p>
+	 * newline, nbsp, and tab, respectively.
+	 * @param raw maybe <code>null</code>.
+	 * @return maybe <code>null</code> if null for input.
+	 */
+	protected String escapeAttributeMarkup(String raw) {
+		return MarkupUtils.escapeAttributeEntities(raw);
 	}
 	
 	private void writeIndent(

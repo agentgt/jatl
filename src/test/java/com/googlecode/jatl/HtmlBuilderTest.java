@@ -581,4 +581,23 @@ public class HtmlBuilderTest {
 		assertEquals(expected, result);
 	}
 	
+	@Test
+	public void testAttributeWhitespaceEscaping() throws Exception {
+		new Html(writer) {{
+			html().head().end();
+			input().value("hello\012world");
+			input().value("hello\t\tworld");
+			done();
+		}};
+		String result = writer.getBuffer().toString();
+		String expected = "\n" + 
+				"<html>\n" + 
+				"	<head>\n" + 
+				"	</head>\n" + 
+				"	<input value=\"hello&#xA;world\"/>\n" + 
+				"	<input value=\"hello&#x9;&#x9;world\"/>\n" + 
+				"</html>";
+		assertEquals(expected, result);		
+	}
+	
 }
