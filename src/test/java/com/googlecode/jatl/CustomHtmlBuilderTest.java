@@ -44,7 +44,6 @@ public class CustomHtmlBuilderTest {
 		
 		public CustomBuilder(Writer writer) {
 			super(writer);
-			// TODO Auto-generated constructor stub
 		}
 
 		public T list(String ... ss) {
