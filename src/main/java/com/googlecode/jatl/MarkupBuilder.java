@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Stack;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.text.StrSubstitutor;
 
 import com.googlecode.jatl.Indenter.TagIndentSpot;
@@ -294,6 +293,15 @@ public abstract class MarkupBuilder<T> {
 	}
 	
 	/**
+	 * Sets the indent depth after the builder has been created.
+	 * Only useful with the empty constructor.
+	 * @param depth should greater than or equal <code>0</code>
+	 */	
+	public final void setDepth(int depth) {
+		this.depth = depth;
+	}
+	
+	/**
 	 * Sets the indenter.
 	 * @param indenter if <code>null</code> reverts to the previous builder.
 	 * @return the builder.
@@ -542,6 +550,29 @@ public abstract class MarkupBuilder<T> {
 		this.writer = null;
 	}
 	
+	/**
+	 * Writes immediately by passing the writer to each {@link MarkupWriter} 
+	 * in the order passed in.
+	 * @param writers never <code>null</code>, null elements passed in are ignored.
+	 * @return never <code>null</code>.
+	 */
+	public final T write(MarkupWriter... writers) {
+		checkWriter();
+		int depth = 1 + (tagStack.isEmpty() ? 0 : tagStack.peek().depth);
+		writeCurrentTag();
+		notNull(writers, "writers");
+		for (MarkupWriter w : writers) {
+			if (w != null && w instanceof MarkupBuilderWriter) {
+				((MarkupBuilderWriter)w).write(this.writer, this.depth + depth);
+			}
+			else if (w != null) {
+				w.write(this.writer);
+			}
+		}
+		
+		return getSelf();
+	}
+	
 	private void writeCurrentTag() {
 		checkWriter();
 		if ( ! tagStack.isEmpty() ) {
@@ -666,7 +697,7 @@ public abstract class MarkupBuilder<T> {
 	 * The default escaping is XML. 
 	 * Entities will be used for white space characters:
 	 * <code>#xD, #xA, #x9</code><p>
-	 * newline, nbsp, and tab, respectively.
+	 * CR, newline, and tab, respectively.
 	 * @param raw maybe <code>null</code>.
 	 * @return maybe <code>null</code> if null for input.
 	 */
