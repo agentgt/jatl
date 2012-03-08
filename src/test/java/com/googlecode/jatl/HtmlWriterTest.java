@@ -51,4 +51,49 @@ public class HtmlWriterTest {
 		assertEquals(expected, actual);
 		
 	}
+	
+	@Test
+	public void testWriterMethod() throws Exception {
+
+		
+		final HtmlWriter input = new HtmlWriter() {
+			@Override
+			protected void build() {
+				input().name("test").value("value").end();
+			}
+		};
+		
+		final HtmlWriter form = new HtmlWriter() {
+			@Override
+			protected void build() {
+				form().write(input).end();
+			}
+		};
+		
+		//Do not write yet.
+		html = new HtmlWriter() {
+			@Override
+			protected void build() {
+				html().head().end().body();
+				text("Hello");
+				write(form);
+				done();
+			}
+		};
+		
+		//Now write.
+		String actual = html.write(writer).getBuffer().toString();
+		String expected = "\n" + 
+				"<html>\n" + 
+				"	<head>\n" + 
+				"	</head>\n" + 
+				"	<body>Hello\n" + 
+				"		<form>\n" + 
+				"			<input name=\"test\" value=\"value\"/>\n" + 
+				"		</form>\n" + 
+				"	</body>\n" + 
+				"</html>";
+		assertEquals(expected, actual);
+		
+	}
 }

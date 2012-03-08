@@ -38,7 +38,7 @@ import java.io.Writer;
  * @see MarkupWriter
  *
  */
-public abstract class HtmlWriter extends HtmlBuilder<HtmlWriter> implements MarkupWriter {
+public abstract class HtmlWriter extends HtmlBuilder<HtmlWriter> implements MarkupBuilderWriter {
 
 	public HtmlWriter() {
 		super();
@@ -55,6 +55,14 @@ public abstract class HtmlWriter extends HtmlBuilder<HtmlWriter> implements Mark
 		done();
 		return writer;
 	}
+	
+	public <W extends Writer> W write(W writer, int depth) {
+		setWriter(writer);
+		setDepth(depth);
+		build();
+		done();
+		return writer;
+	}	
 	
 	/**
 	 * Should build the markup and is called by {@link #write(Writer)}.
