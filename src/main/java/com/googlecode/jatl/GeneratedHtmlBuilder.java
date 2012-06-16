@@ -506,11 +506,11 @@ abstract class GeneratedHtmlBuilder<T> extends MarkupBuilder<T> {
 	 * Starts the &lt;iframe&gt; tag.
 	 * [inline subwindow]
 	 * <p>
-	 * Tag Closing Policy: {@link MarkupBuilder.TagClosingPolicy#NORMAL}
+	 * Tag Closing Policy: {@link MarkupBuilder.TagClosingPolicy#PAIR}
 	 * @return this, never <code>null</code> 
 	 */
 	public T iframe() {
-		return start("iframe", TagClosingPolicy.NORMAL);
+		return start("iframe", TagClosingPolicy.PAIR);
 	}
 
 	/**

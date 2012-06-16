@@ -626,4 +626,17 @@ public class HtmlBuilderTest {
 		assertEquals(expected, result);		
 	}
 	
+	@Test
+	public void testIssue16Iframe() {
+		new Html(writer) {{
+			iframe().src("http://www.google.com").end();
+			done();
+		}};
+		String result = writer.getBuffer().toString();
+		String expected = "\n" + 
+				"<iframe src=\"http://www.google.com\">\n" + 
+				"</iframe>";
+		assertEquals(expected, result);
+	}
+	
 }
