@@ -27,6 +27,7 @@ import com.googlecode.jatl.MarkupBuilder.TagClosingPolicy;
  * <b>EXPERIMENTAL MAY CHANGE</b>
  * @author agent
  * @see MarkupBuilder#indent(Indenter)
+ * @since 0.2.0
  */
 public interface Indenter {
 	

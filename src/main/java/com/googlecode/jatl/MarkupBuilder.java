@@ -83,6 +83,10 @@ public class MyMarkup extends MarkupBuilder&lt;MyMarkup&gt; {
 	}
 }
  * </pre>
+ * <h2>Composition</h2>
+ * Besides the extending method above you can achieve composition of markup builders by using MarkupWriter's instead.
+ * See {@link MarkupWriter}. <p>
+ * See {@link #write(MarkupWriter...)}.
  * 
  * <h2>Writing tags and attributes</h2>
  * See {@link #start(String)} and {@link #end()} for writing tags.
@@ -555,6 +559,7 @@ public abstract class MarkupBuilder<T> {
 	 * in the order passed in.
 	 * @param writers never <code>null</code>, null elements passed in are ignored.
 	 * @return never <code>null</code>.
+	 * @since 0.2.2
 	 */
 	public final T write(MarkupWriter... writers) {
 		checkWriter();

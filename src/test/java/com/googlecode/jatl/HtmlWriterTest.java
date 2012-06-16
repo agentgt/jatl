@@ -52,23 +52,31 @@ public class HtmlWriterTest {
 		
 	}
 	
+	private HtmlWriter createInput(final String name, final String value) {
+		return new HtmlWriter() {
+			@Override
+			protected void build() {
+				input().name(name).value(value).end();
+			}
+		};
+	}
+	
+	private HtmlWriter createForm(final HtmlWriter ... inputs) {
+		return new HtmlWriter() {
+			@Override
+			protected void build() {
+				form().write(inputs).end();
+			}
+		};
+	}
+	
 	@Test
 	public void testWriterMethod() throws Exception {
 
 		
-		final HtmlWriter input = new HtmlWriter() {
-			@Override
-			protected void build() {
-				input().name("test").value("value").end();
-			}
-		};
+		final HtmlWriter input = createInput("test", "value");
 		
-		final HtmlWriter form = new HtmlWriter() {
-			@Override
-			protected void build() {
-				form().write(input).end();
-			}
-		};
+		final HtmlWriter form = createForm(input);
 		
 		//Do not write yet.
 		html = new HtmlWriter() {
