@@ -18,7 +18,6 @@ package com.googlecode.jatl;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 import java.io.StringWriter;
 import java.io.Writer;
@@ -556,6 +555,33 @@ public class HtmlBuilderTest {
 	
 	@Test
 	public void testCustomIndenter() throws Exception {
+		final Indenter indenter = new SimpleIndenter("\n", "\t", "", "");
+		new Html(writer) {{
+			int i = 1;
+			indent(indentOff).html().body().indent(indenter);
+			table();
+			tr();
+				td().text("" + i++).end();
+				td().text("" + i++).end();
+			end();
+			tr();
+				td().text("" + i++).end();
+			endAll();
+		}};
+		String result = writer.getBuffer().toString();
+		String expected = "<html>\n" + 
+				"	<body>\n" + 
+				"		<table>\n" + 
+				"			<tr>\n" + 
+				"				<td>1</td>\n" + 
+				"				<td>2</td></tr>\n" + 
+				"			<tr>\n" + 
+				"				<td>3</td></tr></table></body></html>";
+		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void testCustomIndenterIssue13() throws Exception {
 		final Indenter indenter = new SimpleIndenter("\n", "\t", "", "");
 		new Html(writer) {{
 			int i = 1;
