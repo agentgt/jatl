@@ -23,12 +23,37 @@ import java.io.Writer;
  * Wrap builders for deferred writing.
  * <p>
  * This is useful when you want to define the markup but do not
- * have the {@link Writer} yet. This is often the case with
- * Spring MVC or any MVC framework where the writer is not available
- * till rendering time.
- * 
+ * have the {@link Writer} yet. 
+ * <p> Often this is the case when:
+ * <ul>
+ * <p>
+ * <li>MVC framework (such as Spring MVC) where the writer is not available
+ * till rendering time. </li>
+ * <li>Composition of builders.</li>
+ * </ul>
+ * You can achieve functional composition of markup builders by creating methods that return {@link MarkupWriter}s.
+ * <pre>
+	private HtmlWriter createInput(final String name, final String value) {
+		return new HtmlWriter() {
+			protected void build() {
+				input().name(name).value(value).end();
+			}
+		};
+	}
+	
+	private HtmlWriter createForm(final HtmlWriter ... inputs) {
+		return new HtmlWriter() {
+			protected void build() {
+				form().write(inputs).end();
+			}
+		};
+	}
+ * </pre>
+ * See {@link MarkupBuilder#write(MarkupWriter...)}
+ * <p>
  * @author agent
  * @see HtmlWriter
+ * @see MarkupBuilder#write(MarkupWriter...)
  */
 public interface MarkupWriter {
 	/**

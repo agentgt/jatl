@@ -22,8 +22,10 @@ import java.io.Writer;
 /**
  * 
  * The methods in this class will be merged with {@link MarkupWriter} in 0.3.0.
- * 
+ * <p>
+ * Thus this interface will be deprecated in the next release.
  * @author agent
+ * @since 0.2.2
  *
  */
 public interface MarkupBuilderWriter extends MarkupWriter {
@@ -35,6 +37,8 @@ public interface MarkupBuilderWriter extends MarkupWriter {
 	 * @param depth the indent depth to start at.
 	 * @param writer not null.
 	 * @return the writer used for fluent style.
+	 * @since 0.2.2
+	 * @see MarkupBuilder#write(MarkupWriter...)
 	 */
 	public <W extends Writer> W  write(W writer, int depth);
 }
