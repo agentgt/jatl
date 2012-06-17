@@ -772,7 +772,7 @@ public abstract class MarkupBuilder<T> {
 		 * no child tags or text.
 		 * <ul>
 		 * <li><code>&lt;tag/&gt;</code></li>
-		 * <li><code>&lt;/tag&gt;</code></li>
+		 * <li><code>&lt;tag&gt;...&lt;/tag&gt;</code></li>
 		 * </ul>
 		 * <em>Unlike {@link #SELF self closing} tags a {@link #NORMAL} tag must be explicitly closed.</em>
 		 */
@@ -781,7 +781,7 @@ public abstract class MarkupBuilder<T> {
 		/**
 		 * The tag is always a self closing tag.
 		 * <ul>
-		 * <li><code>&lt;tag/&gt;</code></li>
+		 * <li><code>&lt;tag/&gt;...</code></li>
 		 * </ul>
 		 * <em>When a tag has this policy the tag can be implicitly closed 
 		 * by {@link MarkupBuilder#start(String, TagClosingPolicy) starting the next tag}:</em><p>
@@ -801,7 +801,8 @@ public abstract class MarkupBuilder<T> {
 		 * The tag is always closed with a matching closing tag
 		 * regardless if there is no child tag or text.
 		 * <ul>
-		 * <li><code>&lt;tag/&gt;</code></li>
+		 * <li><code>&lt;tag&gt;...&lt;/tag&gt;</code></li>
+		 * <li><code>&lt;tag&gt;&lt;/tag&gt;</code></li>
 		 * </ul>
 		 */
 		PAIR;
