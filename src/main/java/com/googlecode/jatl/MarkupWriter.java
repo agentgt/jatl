@@ -31,9 +31,9 @@ import java.io.Writer;
  * till rendering time. </li>
  * <li>Composition of builders.</li>
  * </ul>
- * You can achieve functional composition of markup builders by creating methods that return {@link MarkupWriter}s.
+ * You can achieve <strong>functional composition</strong> of markup builders by creating methods that return {@link MarkupWriter}s.
  * <pre>
-	private HtmlWriter createInput(final String name, final String value) {
+	private static HtmlWriter createInput(final String name, final String value) {
 		return new HtmlWriter() {
 			protected void build() {
 				input().name(name).value(value).end();
@@ -41,7 +41,7 @@ import java.io.Writer;
 		};
 	}
 	
-	private HtmlWriter createForm(final HtmlWriter ... inputs) {
+	private static HtmlWriter createForm(final HtmlWriter ... inputs) {
 		return new HtmlWriter() {
 			protected void build() {
 				form().write(inputs).end();
@@ -49,6 +49,8 @@ import java.io.Writer;
 		};
 	}
  * </pre>
+ * <em>Notice that the above methods are static as they are used as functions and do not mutate their containing class.</em>
+ * <p>
  * See {@link MarkupBuilder#write(MarkupWriter...)}
  * <p>
  * @author agent
