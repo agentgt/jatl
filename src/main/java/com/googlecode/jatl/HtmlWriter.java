@@ -16,6 +16,7 @@
 
 package com.googlecode.jatl;
 
+import java.io.StringWriter;
 import java.io.Writer;
 
 /**
@@ -63,6 +64,15 @@ public abstract class HtmlWriter extends HtmlBuilder<HtmlWriter> implements Mark
 		done();
 		return writer;
 	}	
+	
+	/**
+	 * Uses a StringWriter to write the HTML created in {@link #build()}. 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return write(new StringWriter()).getBuffer().toString();
+	}
 	
 	/**
 	 * Should build the markup and is called by {@link #write(Writer)}.
