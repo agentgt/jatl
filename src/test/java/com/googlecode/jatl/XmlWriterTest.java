@@ -16,16 +16,12 @@
 
 package com.googlecode.jatl;
 
-
 import static org.junit.Assert.assertEquals;
-
-import java.io.StringWriter;
 
 import org.junit.Test;
 
 public class XmlWriterTest {
 
-	StringWriter writer = new StringWriter();
 	XmlWriter xml;
 	
 	@Test
@@ -41,7 +37,7 @@ public class XmlWriterTest {
 			}
 		};
 		//Now write.
-		String actual = xml.write(writer).getBuffer().toString();
+		String actual = xml.toString();
 		String expected = "<element attribute=\"first\"/>\n" + 
 				"<element attribute=\"second\"/>";
 		assertEquals(expected, actual);

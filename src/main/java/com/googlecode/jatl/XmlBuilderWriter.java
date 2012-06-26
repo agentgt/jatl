@@ -1,5 +1,6 @@
 package com.googlecode.jatl;
 
+import java.io.StringWriter;
 import java.io.Writer;
 
 
@@ -22,7 +23,16 @@ public abstract class XmlBuilderWriter<T> extends MarkupBuilder<T> implements Ma
 		build();
 		done();
 		return writer;
-	}	
+	}
+	
+	/**
+	 * Uses a StringWriter to write the XML created in {@link #build()}. 
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		return write(new StringWriter()).getBuffer().toString();
+	}
 	
 	/**
 	 * Should build the markup and is called by {@link #write(Writer)}.
