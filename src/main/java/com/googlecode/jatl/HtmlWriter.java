@@ -76,6 +76,9 @@ public abstract class HtmlWriter extends HtmlBuilder<HtmlWriter> implements Mark
 	
 	/**
 	 * Should build the markup and is called by {@link #write(Writer)}.
+	 * This method should describe the markup that should be built and is the entry point to the JATL DSL.
+	 * If you are making your own custom {@link HtmlWriter} do not override this method
+	 * as it is the method used by anonymous classes to describe the markup.
 	 * @see MarkupBuilder
 	 */
 	protected abstract void build();

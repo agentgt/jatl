@@ -3,7 +3,14 @@ package com.googlecode.jatl;
 import java.io.StringWriter;
 import java.io.Writer;
 
-
+/**
+ * For generic XML creation subclass this class for a custom XML writer or use {@link XmlWriter}.
+ * When subclassing make the child class <code>abstract<code> and do not implement {@link #build()}. 
+ * The {@link #toString()} on this class will do what you expect: generate the XML as a string.
+ * @author agent
+ *
+ * @param <T>
+ */
 public abstract class XmlBuilderWriter<T> extends MarkupBuilder<T> implements MarkupBuilderWriter {
 
 	public XmlBuilderWriter() {
@@ -36,6 +43,9 @@ public abstract class XmlBuilderWriter<T> extends MarkupBuilder<T> implements Ma
 	
 	/**
 	 * Should build the markup and is called by {@link #write(Writer)}.
+	 * This method should describe the markup that should be built and is the entry point to the JATL DSL.
+	 * If you are making your own custom {@link XmlWriter} do not override this method
+	 * as it is the method used by anonymous classes to describe the markup.
 	 * @see MarkupBuilder
 	 */
 	protected abstract void build();
