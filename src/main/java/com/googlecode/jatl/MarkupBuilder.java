@@ -461,9 +461,15 @@ public abstract class MarkupBuilder<T> {
 	 * @param attrs name value pairs. Its invalid for an odd number of arguments.
 	 * @return never <code>null</code>.
 	 * @throws IllegalArgumentException odd number of arguments.
+	 * @throws IllegalStateException if there are no open start tags.
 	 */
 	public final T attr(String ... attrs ) {
 		isTrue(attrs.length  % 2 == 0);
+		if (tagStack.isEmpty() || (tagStack.peek().start)) {
+			throw new IllegalStateException("There are no open tags to add attributes too. " +
+					"Markup attributes should only be added " +
+					"immediatly after starting a tag.");
+		}
 		checkWriter();
 		for (int n = 0, v = 1; v < attrs.length; n+=2, v+=2) {
 			getAttributes().put(attrs[n], attrs[v]);
