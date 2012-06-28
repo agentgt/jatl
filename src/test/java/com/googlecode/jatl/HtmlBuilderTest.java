@@ -639,4 +639,47 @@ public class HtmlBuilderTest {
 		assertEquals(expected, result);
 	}
 	
+	@Test
+	public void testIssue18TagClosingPairPolicyFailing() throws Exception {
+		new Html(sw) {
+			{
+				div();
+				hr().text("");
+				end();
+			}
+		};
+		String result = writer.getBuffer().toString();
+		String expected = "\n" + 
+				"<div>\n" + 
+				"	<hr/>\n" +
+				"</div>";
+		assertEquals(expected, result);
+	}
+
+	@Test(expected=IllegalStateException.class)
+	public void testIllegalAttributeOrder() throws Exception {
+		new Html(sw) {
+			{
+				div();
+				hr().text("");
+				attr("id", "cat");
+				div().end();
+				end();
+			}
+		};
+		writer.getBuffer().toString();
+	}
+	
+	@Test(expected=IllegalStateException.class)
+	public void testIllegalAttributesBeforeStartTag() throws Exception {
+		new Html(sw) {
+			{
+				attr("id", "cat");
+				div();
+				end();
+			}
+		};
+		writer.getBuffer().toString();
+	}
+	
 }
