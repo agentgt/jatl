@@ -21,7 +21,7 @@ HOWEVER Java 8 is out and actually works!! Finally the oracle overlords have beq
  * ~~Full~~ Better HTML5 support (XML style HTML5).
  * Appendable instead of Writer (no need to wrap StringBuilder)
  * Better Indentation strategy documentation
- * Better escaping strategy (see [http://code.google.com/p/jatl/issues/detail?id=10 Issue #10])
+ * Better escaping strategy (see [Issue #10](http://code.google.com/p/jatl/issues/detail?id=10))
  * Remove Commons Lang dependency (JATL will have no dependencies)
  * A generic concrete XML Builder and Writer (Issue #15).
 
