@@ -123,7 +123,7 @@ http://stackoverflow.com/questions/3583846/java-html-builder-anti-template-libra
 
 _Notice the double brace after the Html constructor. This is done on purpose._ Double braces on anonymous class definitions is how many libraries including JATL achieve a DSL.
 
-*For more examples please browse the [unit test code](http://code.google.com/p/jatl/source/browse/src/test/java/com/googlecode/jatl/HtmlBuilderTest.java).*
+*For more examples please browse the [unit test code](https://github.com/agentgt/jatl/blob/master/src/test/java/com/googlecode/jatl/HtmlBuilderTest.java).*
 
 ## Features
 
