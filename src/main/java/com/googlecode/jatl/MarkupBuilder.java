@@ -16,10 +16,10 @@
 
 package com.googlecode.jatl;
 
-import static org.apache.commons.lang.StringUtils.isBlank;
-import static org.apache.commons.lang.Validate.isTrue;
-import static org.apache.commons.lang.Validate.notEmpty;
-import static org.apache.commons.lang.Validate.notNull;
+import static com.googlecode.jatl.InternalValidationUtils.isBlank;
+import static com.googlecode.jatl.InternalValidationUtils.isTrue;
+import static com.googlecode.jatl.InternalValidationUtils.notEmpty;
+import static com.googlecode.jatl.InternalValidationUtils.notNull;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -31,8 +31,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Stack;
-
-import org.apache.commons.lang.text.StrSubstitutor;
 
 import com.googlecode.jatl.Indenter.TagIndentSpot;
 
@@ -389,7 +387,7 @@ public abstract class MarkupBuilder<T> {
 	 * @return never <code>null</code>.
 	 */
 	public final T bind(String name, Object value) {
-		notEmpty(name);
+		notEmpty(name, "name");
 		Object v = value != null && value instanceof String ? expand(value.toString()) : value;
 	    bindings.put(name, v);
 	    return getSelf();
@@ -464,7 +462,7 @@ public abstract class MarkupBuilder<T> {
 	 * @throws IllegalStateException if there are no open start tags.
 	 */
 	public final T attr(String ... attrs ) {
-		isTrue(attrs.length  % 2 == 0);
+		isTrue(attrs.length  % 2 == 0, "attributes should be multiple of 2 (name=value)");
 		if (tagStack.isEmpty() || (tagStack.peek().start)) {
 			throw new IllegalStateException("There are no open tags to add attributes too. " +
 					"Markup attributes should only be added " +
@@ -659,7 +657,7 @@ public abstract class MarkupBuilder<T> {
 	}
 	
 	private String expand(String text) {
-	    StrSubstitutor s = new StrSubstitutor(bindings);
+	    InternalStrSubstitutor s = new InternalStrSubstitutor(bindings);
 	    return s.replace(text);
 	}
 	
@@ -698,7 +696,6 @@ public abstract class MarkupBuilder<T> {
 	 * @see #text(String)
 	 * @see #escapeAttributeMarkup(String)
 	 */
-	@SuppressWarnings("deprecation")
 	protected String escapeElementMarkup(String raw) {
 		return escapeMarkup(raw);
 	}

@@ -18,8 +18,6 @@ package com.googlecode.jatl;
 
 import java.io.Writer;
 
-import org.apache.commons.lang.StringEscapeUtils;
-
 /**
  * Most of the XHTML tags and attributes are available as methods.
  * A rule of thumb is that most tags are zero parameter methods and attribute
@@ -69,11 +67,6 @@ public abstract class HtmlBuilder<T> extends GeneratedHtmlBuilder<T> {
 		text(name);
 		end();
 		return getSelf();
-	}
-
-	@Override
-	protected String escapeMarkup(String raw) {
-		return StringEscapeUtils.escapeHtml(raw);
 	}
 
 }
