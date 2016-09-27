@@ -15,15 +15,22 @@ Yes JATL has not been touched for awhile. Not because its not useful or dead but
 
 HOWEVER Java 8 is out and actually works!! Finally the oracle overlords have bequeathed us with elegant deferred logic and sort of traits. Consequently JATL will probably probably be changed dramatically as there were many things people wanted to do that were rather difficult or not very elegant with the anonymous classes.
 
+### 2.0.0 Planned
 
-### 0.3.0 Planned
+ * JDK 8 lambda rewrite - leverage functional and stream programming.
+ 
+### 1.0.0 Planned
 
- * ~~Full~~ Better HTML5 support (XML style HTML5).
+ * ~~Full~~ Some more HTML5 support (XML style HTML5).
  * Appendable instead of Writer (no need to wrap StringBuilder)
  * Better Indentation strategy documentation
  * Better escaping strategy (see [Issue #10](http://code.google.com/p/jatl/issues/detail?id=10))
+
+### 0.2.3 Released
+
  * Remove Commons Lang dependency (JATL will have no dependencies)
  * A generic concrete XML Builder and Writer (Issue #15).
+ * The HTML 5 escaping is now XML escaping
 
 ### 0.2.2 Released
 
