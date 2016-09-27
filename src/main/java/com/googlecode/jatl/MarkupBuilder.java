@@ -265,12 +265,14 @@ public abstract class MarkupBuilder<T> {
 	 * the prefix is set to a non-null non-empty string, the prefix will
 	 * be added in front of the tag.
 	 * <p>
-	 * <strong>Example:</strong><p>
+	 * <strong>Example:</strong>
+	 * </p>
 	 * <pre>
 	 * ns("html").div().end();
 	 * </pre>
-	 * <strong>Result:</strong>
 	 * <p>
+	 * <strong>Result:</strong>
+	 * </p>
 	 * <pre>
 	 * &lt;html:div&gt;&lt;/html:div&gt;
 	 * </pre>
@@ -343,7 +345,7 @@ public abstract class MarkupBuilder<T> {
 	
 	/**
 	 * Write text with out escaping or variable expansion.
-	 * @param text
+	 * @param text text to be directly written with escaping or expansion (be careful).
 	 * @return never <code>null</code>.
 	 * @see #raw(String, boolean)
 	 */
@@ -352,7 +354,7 @@ public abstract class MarkupBuilder<T> {
 	}
 	/**
 	 * Writes text with out escaping.
-	 * @param text
+	 * @param text maybe <code>null</code>, a <code>null</code> is a no operation.
 	 * @param expand <code>true</code> does variable expansion.
 	 * @return never <code>null</code>.
 	 */
@@ -370,13 +372,14 @@ public abstract class MarkupBuilder<T> {
 	 * and {@link #text(String) text}. Variables are represented with by <code>${...}</code>.
 	 * <p>
 	 * <strong>Example</strong>
+	 * </p>
 	 * <pre>
 	 * bind("name", "Ferris");
 	 * text("${name}");
 	 * </pre>
 	 * <p>
 	 * <em>Variables are expanded in order and can be referred in a later binding.</em>
-	 * <p>
+	 * </p>
 	 * <pre>
 	 * bind("firstName", "Adam");
 	 * bind("lastName", "Gent");
@@ -422,8 +425,8 @@ public abstract class MarkupBuilder<T> {
 	 * Starts a tag using the default closing policy {@link TagClosingPolicy#NORMAL}.
 	 * <p>
 	 * Equivalent to: {@code start("tag", TagClosingPolicy.NORMAL)}.
-	 * 
-	 * @param tag
+	 * </p>
+	 * @param tag the name of the tag, should never be <code>null</code>.
 	 * @return this, never <code>null</code>.
 	 * @see #start(String, TagClosingPolicy)
 	 */
@@ -512,7 +515,7 @@ public abstract class MarkupBuilder<T> {
 	}
 	/**
 	 * Closes the last {@link #start(String) start tag}.
-	 * This is equivalent to <code>&lt;/tag&gt; or &lt;tag/&gt; depending
+	 * This is equivalent to <code>&lt;/tag&gt;</code> or <code>&lt;tag/&gt;</code> depending
 	 *  on the {@link TagClosingPolicy}.
 	 * @return never <code>null</code>.
 	 * @see #start(String, TagClosingPolicy)
@@ -786,18 +789,22 @@ public abstract class MarkupBuilder<T> {
 		 * <ul>
 		 * <li><code>&lt;tag/&gt;...</code></li>
 		 * </ul>
+		 * <p>
 		 * <em>When a tag has this policy the tag can be implicitly closed 
-		 * by {@link MarkupBuilder#start(String, TagClosingPolicy) starting the next tag}:</em><p>
+		 * by {@link MarkupBuilder#start(String, TagClosingPolicy) starting the next tag}:</em>
+		 * </p>
 		 * <pre>
 		 * start("self",TagClosingPolicy.SELF).start("next");
 		 * </pre>
-		 * Result:<p>
+		 * <p>
+		 * Result:
+		 * </p>
 		 * <pre>
 		 * &lt;self/&gt;
 		 * &lt;next&gt;
 		 * ...
 		 * </pre>
-		 * 
+		 *
 		 */
 		SELF,
 		/**

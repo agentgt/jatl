@@ -5,11 +5,11 @@ import java.io.Writer;
 
 /**
  * For generic XML creation subclass this class for a custom XML writer or use {@link XmlWriter}.
- * When subclassing make the child class <code>abstract<code> and do not implement {@link #build()}. 
+ * When subclassing make the child class <code>abstract</code> and do not implement {@link #build()}. 
  * The {@link #toString()} on this class will do what you expect: generate the XML as a string.
  * @author agent
  *
- * @param <T>
+ * @param <T> generally itself for fluent style
  */
 public abstract class XmlBuilderWriter<T> extends MarkupBuilder<T> implements MarkupBuilderWriter {
 

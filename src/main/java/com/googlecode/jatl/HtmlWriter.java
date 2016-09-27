@@ -23,7 +23,8 @@ import java.io.Writer;
  * Writes HTML using an {@link HtmlBuilder}
  * by calling {@link #write(Writer)}.
  * <p>
- * <strong>Example:</strong><p>
+ * <strong>Example:</strong>
+ * </p>
  * <pre>
 	html = new HtmlWriter() {
 		protected void build() {

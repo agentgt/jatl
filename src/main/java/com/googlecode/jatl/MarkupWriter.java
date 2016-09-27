@@ -24,14 +24,15 @@ import java.io.Writer;
  * <p>
  * This is useful when you want to define the markup but do not
  * have the {@link Writer} yet. 
- * <p> Often this is the case when:
+ * </p> Often this is the case when:
  * <ul>
- * <p>
  * <li>MVC framework (such as Spring MVC) where the writer is not available
  * till rendering time. </li>
  * <li>Composition of builders.</li>
  * </ul>
+ * <p>
  * You can achieve <strong>functional composition</strong> of markup builders by creating methods that return {@link MarkupWriter}s.
+ * </p>
  * <pre>
 	private static HtmlWriter createInput(final String name, final String value) {
 		return new HtmlWriter() {
@@ -52,7 +53,7 @@ import java.io.Writer;
  * <em>Notice that the above methods are static as they are used as functions and do not mutate their containing class.</em>
  * <p>
  * See {@link MarkupBuilder#write(MarkupWriter...)}
- * <p>
+ * </p>
  * @author agent
  * @see HtmlWriter
  * @see MarkupBuilder#write(MarkupWriter...)
