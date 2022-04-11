@@ -54,7 +54,7 @@ import com.googlecode.jatl.Indenter.TagIndentSpot;
  * writes when told to. But again in both cases you generally define the markup with an anonymous class.
  * <p>
  * For examples of use its best to see {@link Html} for an XHTML builder which will write XHTML 
- * markup immediatly or {@link HtmlWriter} which allows you to define XHTML markup then write it later.
+ * markup immediately or {@link HtmlWriter} which allows you to define XHTML markup then write it later.
  * <p>
  * {@link MarkupWriter Markup writers} are more useful for MVC frameworks and {@link MarkupBuilder builders}
  * are more for convenience.
@@ -88,7 +88,7 @@ public class MyMarkup extends MarkupBuilder&lt;MyMarkup&gt; {
  * 
  * <h2>Writing tags and attributes</h2>
  * See {@link #start(String)} and {@link #end()} for writing tags.
- * See {@link #attr(String...)} for writting attributes.
+ * See {@link #attr(String...)} for writing attributes.
  * 
  * <h2>Variable expansion</h2>
  * Simple named variable replacements are supported through the <pre>${...}</pre> notation.
@@ -469,7 +469,7 @@ public abstract class MarkupBuilder<T> {
 		if (tagStack.isEmpty() || (tagStack.peek().start)) {
 			throw new IllegalStateException("There are no open tags to add attributes too. " +
 					"Markup attributes should only be added " +
-					"immediatly after starting a tag.");
+					"immediately after starting a tag.");
 		}
 		checkWriter();
 		for (int n = 0, v = 1; v < attrs.length; n+=2, v+=2) {
@@ -502,7 +502,7 @@ public abstract class MarkupBuilder<T> {
 	}
 	
 	/**
-	 * Closes the inputed number of open tags.
+	 * Closes the inputted number of open tags.
 	 * @param i less than zero will do nothing.
 	 * @return never <code>null</code>.
 	 * @see #end()
