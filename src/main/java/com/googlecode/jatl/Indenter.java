@@ -44,7 +44,7 @@ public interface Indenter {
 	 * @param p closing policy for the tag to be indented.
 	 * @param empty if the tag is empty.
 	 * @see MarkupBuilder#indent(Indenter)
-	 * @throws IOException pass through from orginal writer. 
+	 * @throws IOException pass through from original writer. 
 	 */
 	public void indentTag(
 			Appendable a,
